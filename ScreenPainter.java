@@ -2,7 +2,8 @@ import javax.swing.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ScreenPainter extends JFrame implements Runnable{
-    public static int timer=0;
+    public static int timerD=0;
+    public static int timerP=0;
     public void run() {
         Thread th = new Thread(new Runnable() {
 
@@ -31,9 +32,13 @@ public class ScreenPainter extends JFrame implements Runnable{
                     try {
                         if (MouseMotionEventDemo.isDragged)
                         {
-                            timer += 10;
+                            timerD += 20;
                         }
-                        Thread.sleep(10);
+                        if (MouseMotionEventDemo.isPressed)
+                        {
+                            timerP += 20;
+                        }
+                        Thread.sleep(20);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

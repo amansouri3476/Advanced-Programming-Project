@@ -17,4 +17,5 @@ public class coordinatedObject implements hasCoordinates {
     public void setY(int y) {
         this.y_coordinate = y;
     }
+
 }

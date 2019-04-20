@@ -56,10 +56,12 @@ public class MainMenu extends Menu {
                 MoverThread moverThread = new MoverThread();
                 ScreenPainter screenPainter = new ScreenPainter();
                 MouseMotionEventDemo mouseMotionEventDemo = new MouseMotionEventDemo();
+                GameUpdate gameUpdate = new GameUpdate();
                 mouseMotionEventDemo.run();
 //                gameScreen.run();
                 moverThread.run();
                 screenPainter.run();
+                gameUpdate.run();
             }
         });
 

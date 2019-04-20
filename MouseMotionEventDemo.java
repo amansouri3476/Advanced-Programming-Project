@@ -6,11 +6,12 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.*;
 
-public class MouseMotionEventDemo extends JFrame implements MouseMotionListener,Runnable {
+public class MouseMotionEventDemo extends JFrame implements MouseMotionListener,MouseListener,Runnable {
 //    GameScreen gameScreen;
     public static int event_x;
     public static int event_y;
     public static boolean isDragged;
+    public static boolean isPressed;
     public static Spaceship spaceship;
     public static JFrame gameFrame;
     public void run() {
@@ -22,6 +23,7 @@ public class MouseMotionEventDemo extends JFrame implements MouseMotionListener,
         JFrame gameFrame = new JFrame("Chicken Invaders");
         this.gameFrame = gameFrame;
         gameFrame.addMouseMotionListener(this);
+        gameFrame.addMouseListener(this);
 //        gameFrame.addMouseListener((MouseListener) this);
         JLabel backgroundLabel = new JLabel();
         JLabel spaceshipLabel = new JLabel();
@@ -82,19 +84,34 @@ public class MouseMotionEventDemo extends JFrame implements MouseMotionListener,
 
     void eventOutput(String eventDescription, MouseEvent e) {
         if (eventDescription.equals("Mouse moved")){
+//            System.out.println("Mouse moved");
             event_x = e.getX();
             event_y = e.getY();
         }
         if (eventDescription.equals("Mouse dragged")){
+            System.out.println("Mouse dragged");
             event_x = e.getX();
             event_y = e.getY();
             isDragged = true;
-            Gun.singleShot(event_x, event_y, gameFrame.getContentPane(), Gun.damage);
-
+            Gun.longShotD(event_x, event_y, gameFrame.getContentPane(), Gun.damage);
+        }
+        if (eventDescription.equals("Mouse pressed")){
+            System.out.println("Mouse pressed");
+            event_x = e.getX();
+            event_y = e.getY();
+            isPressed = true;
+            Gun.longShotP(event_x, event_y, gameFrame.getContentPane(), Gun.damage);
         }
         if (eventDescription.equals("Mouse released")){
+            System.out.println("Mouse released");
             Gun.interruptShooting();
         }
+//        if (eventDescription.equals("Mouse clicked")){
+//            System.out.println("Mouse clicked");
+//            event_x = e.getX();
+//            event_y = e.getY();
+//            Gun.singleShot(event_x, event_y, gameFrame.getContentPane(), Gun.damage);
+//        }
 //        System.out.println(eventDescription
 //                + " (" + e.getX() + "," + e.getY() + ")"
 //                + " detected on "
@@ -111,4 +128,22 @@ public class MouseMotionEventDemo extends JFrame implements MouseMotionListener,
     public void mouseReleased(MouseEvent e){
         eventOutput("Mouse released", e);
     }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
+    }
+
+    public void mousePressed(MouseEvent e){
+        eventOutput("Mouse pressed", e);
+    }
+    public void mouseClicked(MouseEvent e){
+        eventOutput("Mouse clicked", e);
+    }
+
 }

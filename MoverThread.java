@@ -30,7 +30,7 @@ public class MoverThread implements Runnable {
 //                        System.out.println("Bullet List is Empty");
                     }
                     try {
-                        Thread.sleep(100);
+                        Thread.sleep(20);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

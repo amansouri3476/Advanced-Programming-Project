@@ -57,30 +57,9 @@ public class GameScreen extends JFrame{
         gameFrame.repaint();
         gameFrame.setVisible(true);
     }
-//    public MouseMotionEventDemo() {
-//
-//        Register for mouse events on blankArea and panel.
-//        blankArea.addMouseMotionListener(this);
-//        addMouseMotionListener(this);
-//
-//
-//    }
-//
-//    public void mouseMoved(MouseEvent e) {
-//        eventOutput("Mouse moved", e);
-//    }
-//
-//    public void mouseDragged(MouseEvent e) {
-//        eventOutput("Mouse dragged", e);
-//    }
-//
-//
-//
+
 
     public void run() {
-//        activateMouse();
-//        activateMouseDrag();
-//        activateMouseRelease();
     }
-//
+
 }
