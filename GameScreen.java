@@ -230,5 +230,4 @@ class Gun1 {
     public void interruptShooting(){
 
     }
-as
 }
