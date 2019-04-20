@@ -2,13 +2,16 @@ import javax.swing.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ScreenPainter extends JFrame implements Runnable{
-
+    public static int timer=0;
     public void run() {
         Thread th = new Thread(new Runnable() {
 
             public void run() {
                 while (true){
-//                    System.out.println("ScreenPainter Thread");
+
+                    // Spaceship Painting
+                    Spaceship.spaceshipLabel.setBounds(MouseMotionEventDemo.event_x, MouseMotionEventDemo.event_y, 300, 300);
+                    // Bullets Painting
                     if (!ListOfBullets.Bullets.isEmpty()){
 //                        System.out.println("Bullet List is Non-Empty");
                         AtomicInteger bulletCounter = new AtomicInteger(0);
@@ -25,11 +28,12 @@ public class ScreenPainter extends JFrame implements Runnable{
                             });
                         }
                     }
-                    else{
-//                        System.out.println("Bullet List is Empty");
-                    }
                     try {
-                        Thread.sleep(200);
+                        if (MouseMotionEventDemo.isDragged)
+                        {
+                            timer += 10;
+                        }
+                        Thread.sleep(10);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

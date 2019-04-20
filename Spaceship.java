@@ -2,11 +2,14 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Spaceship extends coordinatedObject implements hasCoordinates, hasRange {
-    public Gun gun;
-    Container container;
-    JLabel spaceshipLabel;
+    public static Gun gun;
+    public Container container;
+    public static JLabel spaceshipLabel;
     Spaceship(Container container, JLabel spaceshipLabel){
-        gun = new Gun(container, spaceshipLabel);
+        System.out.println("Spaceship Constructed");
+        Spaceship.gun = new Gun(container, spaceshipLabel);
+        this.container = container;
+        this.spaceshipLabel = spaceshipLabel;
     }
 
     public int getX() {
@@ -23,6 +26,10 @@ public class Spaceship extends coordinatedObject implements hasCoordinates, hasR
 
     public void setY(int y) {
         this.y_coordinate = y;
+    }
+
+    public Gun getGun(){
+        return this.gun;
     }
 
     public boolean isInRange(coordinatedObject object) {

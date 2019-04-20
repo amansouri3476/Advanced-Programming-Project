@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +8,7 @@ public class Player implements Serializable {
     double x_coordinate, y_coordinate;
     private String userName;
     public boolean canResume;
+    JLabel spaceshipLabel;
     Player(String name){
         userName = name;
         ListOfUsers.Players.add(name);

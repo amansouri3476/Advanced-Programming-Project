@@ -2,10 +2,19 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
+import java.awt.image.BufferedImage;
 
 @SuppressWarnings("Duplicates")
 public class MainMenu extends Menu {
 
+    // Transparent 16 x 16 pixel cursor image.
+    private BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+
+    // Create a new blank cursor.
+    private Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
+            cursorImg, new Point(0, 0), "blank cursor");
     MainMenu(String name) {
         super(name);
     }
@@ -43,13 +52,17 @@ public class MainMenu extends Menu {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                GameScreen gameScreen = new GameScreen();
+//                GameScreen gameScreen = new GameScreen();
                 MoverThread moverThread = new MoverThread();
                 ScreenPainter screenPainter = new ScreenPainter();
-                gameScreen.run();
+                MouseMotionEventDemo mouseMotionEventDemo = new MouseMotionEventDemo();
+                mouseMotionEventDemo.run();
+//                gameScreen.run();
                 moverThread.run();
                 screenPainter.run();
             }
         });
+
     }
+
 }
