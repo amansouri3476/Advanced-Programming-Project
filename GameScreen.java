@@ -227,8 +227,8 @@ class Gun1 {
         container.repaint();
         container.setVisible(true);
     }
-    public void interruptShooting(){
-
-    }
+//    public void interruptShooting(){
+//
+//    }
 
 }
