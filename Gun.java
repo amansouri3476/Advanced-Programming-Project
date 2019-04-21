@@ -50,7 +50,7 @@ public class Gun {
     }
     public synchronized static void longShotP(int x, int y, Container container, int damage){
         System.out.println("Long Shot Tried");
-        if (ScreenPainter.timerP % 200 == 0){
+        if (ScreenPainter.timerP % 400 == 0){
             ScreenPainter.timerP = 0;
             System.out.println("Long Shot Accomplished");
             Bullet bullet = new Bullet(x, y, damage, container);
@@ -61,6 +61,7 @@ public class Gun {
             container.repaint();
             container.setVisible(true);
         }
+
     }
     public static void interruptShooting(){
         System.out.println("Shooting Interrupted");

@@ -82,6 +82,8 @@ public class MouseMotionEventDemo extends JFrame implements MouseMotionListener,
 
     }
 
+
+
     void eventOutput(String eventDescription, MouseEvent e) {
         if (eventDescription.equals("Mouse moved")){
 //            System.out.println("Mouse moved");
@@ -89,6 +91,7 @@ public class MouseMotionEventDemo extends JFrame implements MouseMotionListener,
             event_y = e.getY();
         }
         if (eventDescription.equals("Mouse dragged")){
+            isPressed = false;
             System.out.println("Mouse dragged");
             event_x = e.getX();
             event_y = e.getY();
@@ -96,20 +99,40 @@ public class MouseMotionEventDemo extends JFrame implements MouseMotionListener,
             Gun.longShotD(event_x, event_y, gameFrame.getContentPane(), Gun.damage);
         }
         if (eventDescription.equals("Mouse pressed")){
+            isDragged = false;
             System.out.println("Mouse pressed");
             event_x = e.getX();
             event_y = e.getY();
             isPressed = true;
-            Gun.longShotP(event_x, event_y, gameFrame.getContentPane(), Gun.damage);
+//            Gun.longShotP(event_x, event_y, gameFrame.getContentPane(), Gun.damage);
+            Thread thread = new Thread(new Runnable() {
+
+                public void run() {
+                    boolean firstTime = true;
+                    while (isPressed){
+                        System.out.println("Pressed and trying");
+                        if (ScreenPainter.timerP == 400){
+                            firstTime = true;
+                        }
+                        if (ScreenPainter.timerP % 400 == 0 && firstTime){
+                            firstTime = false;
+                            System.out.println("Press Accomplished");
+                            Gun.longShotP(event_x, event_y, gameFrame.getContentPane(), Gun.damage);
+                        }
+                    }
+                }
+            });
+            thread.start();
+
         }
         if (eventDescription.equals("Mouse released")){
             System.out.println("Mouse released");
             Gun.interruptShooting();
         }
 //        if (eventDescription.equals("Mouse clicked")){
+//            isPressed = false;
+//            isDragged = false;
 //            System.out.println("Mouse clicked");
-//            event_x = e.getX();
-//            event_y = e.getY();
 //            Gun.singleShot(event_x, event_y, gameFrame.getContentPane(), Gun.damage);
 //        }
 //        System.out.println(eventDescription
