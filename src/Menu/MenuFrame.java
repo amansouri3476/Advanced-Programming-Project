@@ -22,7 +22,7 @@ public class MenuFrame extends JFrame {
     public JFrame frame;
     public JButton bAddUser, bRemoveUser, bStartUser, bSelectUser, bExitGame;
     private int radius = 40;
-    BufferedImage duke = ImageIO.read(new File("C:\\Users\\Amin\\IdeaProjects\\StarWars\\src\\GameAssets\\darth_vader.png"));
+//    BufferedImage duke = ImageIO.read(new File("C:\\Users\\Amin\\IdeaProjects\\StarWars\\src\\GameAssets\\darth_vader.png"));
 
     public MenuFrame(String name) throws IOException {
         frame = new JFrame(name);
