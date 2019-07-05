@@ -1,34 +1,34 @@
 package GameObjects;
 
 import Interfaces.hasCoordinates;
-import Interfaces.hasRange;
 import Lists.BombList;
-import Lists.ListOfBullets;
 import Movers.BombMover;
-import Movers.BulletMover;
-import Others.GameEventHandler;
-
-import javax.swing.*;
-import java.awt.*;
 
 public class Bomb extends coordinatedObject implements hasCoordinates {
     public BombMover bombMover;
-    public JLabel bombLabel;
-    public Container container;
-    public int speed = 50;
+    public int speed = 2;
+    public double directionAngle;
 
-    public Bomb(int x,int y, Container container){
+    public Bomb(int x,int y){
         this.setX(x);
         this.setY(y);
 
-        int delta_x = ((GameEventHandler.gameWidth / 2) - x);
-        int delta_y = ((GameEventHandler.gameHeight / 2) - y);
-        double angle = Math.atan2(delta_y, delta_x);
+//        destination_x = GameEventHandler.gameWidth / 2;
+//        destination_y = GameEventHandler.gameHeight / 2;
+        destination_x = 800;
+        destination_y = 300;
+        int delta_x = destination_x - x_coordinate;
+        int delta_y = destination_y - y_coordinate;
         BombList.Bombs.add(this);
-        this.bombMover = new BombMover(speed * Math.cos(angle), speed * Math.sin(angle));
-        this.bombLabel = new JLabel(new ImageIcon("C:\\Users\\Amin\\IdeaProjects\\StarWars\\src\\GameAssets\\cohete_off.png"));
-        this.container = container;
-        container.add(bombLabel);
+        this.bombMover = new BombMover(this);
+        this.directionAngle = Math.atan2(delta_y, delta_x);
+
+    }
+    public boolean isNotInScreen(){
+        if (this.getX() < -20 || this.getX() > 1550 || this.getY() < -50 || this.getY() > 800){
+            return true;
+        }
+        else return false;
     }
 
 }

@@ -1,17 +1,9 @@
 package MovingBackground;
 
-import GameObjects.Bullet;
-import GameObjects.Spaceship;
-import Lists.ListOfBullets;
-import Others.GameEventHandler;
-
-import java.awt.Canvas;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class ScrollingBackground extends Canvas implements Runnable {
 
@@ -24,6 +16,9 @@ public class ScrollingBackground extends Canvas implements Runnable {
     public ScrollingBackground() throws IOException {
         backOne = new Background();
         backTwo = new Background(backOne.getImageWidth(), 0);
+
+        Image cursorImage = new ImageIcon("C:\\Users\\Amin\\IdeaProjects\\StarWars\\src\\GameAssets\\saber_double2.png").getImage();
+        setCursor(Toolkit.getDefaultToolkit().createCustomCursor(cursorImage, new Point(0, 0), "cursor"));
 
         new Thread(this).start();
         setVisible(true);

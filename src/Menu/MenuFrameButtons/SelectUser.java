@@ -2,6 +2,7 @@ package Menu.MenuFrameButtons;
 
 import Lists.ListOfUsers;
 import MovingBackground.ScrollingBackground;
+import Multiplayer.GameServer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,11 +19,9 @@ public class SelectUser extends JFrame {
     public SelectUser() throws IOException {
         frame = new JFrame("SELECT USER");
         setSize(3000, 1500);
-//        setLayout(null);
 
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-//        setLayout(new FlowLayout());
         if (ListOfUsers.Players != null) {
 
             AtomicInteger playerCounter = new AtomicInteger(0);
@@ -32,12 +31,10 @@ public class SelectUser extends JFrame {
                 JButton bUser = addButton(player, 700, 100 * playerCounter.get(), 150, 70, radius);
                 add(bUser);
 //                setVisible(true);
-                bUser.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        ListOfUsers.selectedUser = player;
-                        dispose();
-                    }
+                bUser.addActionListener(e -> {
+                    ListOfUsers.selectedUser = player;
+                    System.out.println("User: " + ListOfUsers.selectedUser + " is selected.\n");
+                    dispose();
                 });
 
             });

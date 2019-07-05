@@ -2,19 +2,38 @@ package GameObjects;
 
 import Interfaces.hasCoordinates;
 import Interfaces.hasRange;
+import Movers.SpaceshipMover;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class Spaceship extends coordinatedObject implements hasCoordinates, hasRange {
     public static Gun gun;
     public Container container;
     public static JLabel spaceshipLabel;
+    public static BufferedImage spaceshipImage;
+    public static SpaceshipMover spaceshipMover;
+    public boolean isExploded=false;
+    public int explosionTimer=0;
+    public int explosionX;
+    public int explosionY;
+    int rangeX=20;
+    int rangeY=20;
+    int rangeXPU =100;
+    int rangeYPU =40;
+
+
     public Spaceship(Container container, JLabel spaceshipLabel){
         System.out.println("GameObjects.Spaceship Constructed");
         Spaceship.gun = new Gun(container, spaceshipLabel);
+        Spaceship.spaceshipMover = new SpaceshipMover();
         this.container = container;
         this.spaceshipLabel = spaceshipLabel;
+        this.x_coordinate = 750;
+        this.y_coordinate = 250;
+
+//        this.spaceshipImage = spaceshipIm
     }
 
     public int getX() {
@@ -38,6 +57,23 @@ public class Spaceship extends coordinatedObject implements hasCoordinates, hasR
     }
 
     public boolean isInRange(coordinatedObject object) {
+        return false;
+    }
+
+    public boolean checkCollision(EnemyFire enemyFire) {
+        if (this.getX() - rangeX < enemyFire.getX() && enemyFire.getX() < this.getX() + rangeX && this.getY() - rangeY < enemyFire.getY() && enemyFire.getY() < this.getY() + rangeY){
+            this.isExploded = true;
+            new LoopSound("C:\\Users\\Amin\\IdeaProjects\\StarWars\\src\\GameAssets\\Sonic_Boom.wav", false);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean checkCollisionPowerup(Powerup powerup) {
+        if (this.getX() + 50 < powerup.getX() + rangeXPU && powerup.getX() < this.getX() + 50 && this.getY() + 30 > powerup.getY() && powerup.getY() + rangeYPU < this.getY() + 30){
+//            new LoopSound("C:\\Users\\Amin\\IdeaProjects\\StarWars\\src\\GameAssets\\Sonic_Boom.wav", false);
+            return true;
+        }
         return false;
     }
 }

@@ -1,9 +1,9 @@
 package Menu;
 
+import GameObjects.LoopSound;
 import Lists.ListOfUsers;
 import MovingBackground.ScrollingBackground;
-import Others.GameEventHandler;
-import Screen.GameUpdate;
+import Screen.GamePlayScrolling.GameEventHandler;
 import Screen.ScreenPainter;
 
 import javax.swing.*;
@@ -18,6 +18,7 @@ public class MainMenu extends JFrame {
 
     public JFrame frame;
     public JFrame prevFrame;
+    public LoopSound loopSound;
     int radius = 10;
     // Transparent 16 x 16 pixel cursor image.
     private BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
@@ -26,12 +27,13 @@ public class MainMenu extends JFrame {
     private Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
             cursorImg, new Point(0, 0), "blank cursor");
 
-    public JButton bResumeGame, bStartGame, bRanking, bSettings, bAboutUS, bBack;
+    public JButton bResumeGame, bStartGame, bRanking, bSettings, bAboutUS, bBack,bMultiplayer;
 
     MainMenu(String name, JFrame previousFrame) {
         previousFrame.setVisible(false);
         this.prevFrame = previousFrame;
         this.frame = new JFrame(name);
+        this.loopSound = loopSound;
         setSize(3000, 1500);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         int width = 200;
@@ -55,9 +57,11 @@ public class MainMenu extends JFrame {
         this.add(bAboutUS);
         this.bAboutUS = bAboutUS;
         JButton bBack = addButton("Back to Starting Menu", x - 300, y + delta_y * 4 + 100, width + 50,height, radius);
+        this.add(bBack);
         this.bBack = bBack;
-        this.add(bAboutUS);
-        this.bAboutUS = bAboutUS;
+        JButton bMultiplayer = addButton("Multi-Player", x, y + delta_y * 5, width,height, radius);
+        this.add(bMultiplayer);
+        this.bMultiplayer = bMultiplayer;
         System.out.println("Buttons Added");
 
         ScrollingBackground back = null;
@@ -94,7 +98,7 @@ public class MainMenu extends JFrame {
         bResumeGame.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!ListOfUsers.getPlayerByUsername(ListOfUsers.selectedUser).canResume){
+                if (!ListOfUsers.getPlayerObjByUsername(ListOfUsers.selectedUser).canResume){
                     JOptionPane.showMessageDialog(frame, "You have no saved game to resume!","Alert", JOptionPane.WARNING_MESSAGE);
                 }
                 else {
@@ -115,12 +119,12 @@ public class MainMenu extends JFrame {
                     e1.printStackTrace();
                 }
                 GameEventHandler gameEventHandler = new GameEventHandler();
-                GameUpdate gameUpdate = new GameUpdate();
+//                GameUpdate gameUpdate = new GameUpdate();
                 gameEventHandler.run();
 //                gameScreen.run();
 //                moverThread.run();
-                screenPainter.run();
-                gameUpdate.run();
+//                screenPainter.run();
+//                gameUpdate.run();
             }
         });
         bBack.addActionListener(new ActionListener() {
@@ -134,7 +138,13 @@ public class MainMenu extends JFrame {
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
-                menuFrame.menu();
+//                menuFrame.menu();
+            }
+        });
+        bMultiplayer.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                getContentPane().removeAll();
             }
         });
 

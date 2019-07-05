@@ -5,15 +5,14 @@ import Interfaces.hasCoordinates;
 public class coordinatedObject implements hasCoordinates {
     public int x_coordinate;
     public int y_coordinate;
+    public int destination_x;
+    public int destination_y;
 
     public int getX() {
         return this.x_coordinate;
     }
 
-    public int getY() {
-
-        return this.y_coordinate;
-    }
+    public int getY() { return this.y_coordinate; }
 
     public void setX(int x) {
         this.x_coordinate = x;
