@@ -1,5 +1,7 @@
 package MovingBackground;
 
+import Screen.GamePlayScrolling.ImageLoader;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -14,24 +16,18 @@ public class Background {
     private int y;
 
     private BufferedImage logo;
-
-    {
-        try {
-            logo = ImageIO.read(new File("C:\\Users\\Amin\\IdeaProjects\\StarWars\\src\\GameAssets\\star_wars_logo_PNG36.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     private BufferedImage death_star;
 
     {
         try {
-            death_star = ImageIO.read(new File("C:\\Users\\Amin\\IdeaProjects\\StarWars\\src\\GameAssets\\death_star.png"));
+            logo = ImageLoader.imgLoader("logo");
+            death_star = ImageLoader.imgLoader("death_star");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+
 
     public Background() throws IOException {
         this(0,0);
@@ -78,18 +74,12 @@ public class Background {
             this.y = this.y + image.getHeight() * 2;
         }
         Graphics2D g = (Graphics2D) window;
+
 //        BufferedImage i = ImageIO.read(new File("C:\\Users\\Amin\\IdeaProjects\\ChickenInvaders\\src\\GameAssets\\star_wars_logo_PNG36.png"));
+
         g.drawImage(logo, null, 20, 300);
         g.drawImage(death_star, null, 1000, 250);
 
-
-//        try {
-//            Graphics2D g = (Graphics2D) window;
-//            BufferedImage i = ImageIO.read(new File("C:\\Users\\Amin\\IdeaProjects\\StarWars\\src\\GameAssets\\death_star.png"));
-//            g.drawImage(i, null, 1000, 250);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
 
     }
 
@@ -106,9 +96,6 @@ public class Background {
         return image.getWidth();
     }
 
-//    public String toString() {
-//        return "Background: x=&amp;amp;amp;quot; + getX() + ", art=" + getY() + ", height=" + image.getHeight() + ", width=" + image.getWidth()";
-//    }
 
     @Override
     public String toString() {

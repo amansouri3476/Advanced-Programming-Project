@@ -1,14 +1,13 @@
+package GameObjects;
+
+import javax.sound.sampled.*;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
-import javax.swing.*;
-import javax.sound.sampled.*;
 
 public class LoopSound implements Runnable {
 
     public String path;
     public boolean isContinuous;
-    public Clip clip;
     public LoopSound(String path, boolean isContinuous){
         this.path = path;
         this.isContinuous = isContinuous;
@@ -20,7 +19,6 @@ public class LoopSound implements Runnable {
         Clip clip = null;
         try {
             clip = AudioSystem.getClip();
-            this.clip = clip;
         } catch (LineUnavailableException e) {
             e.printStackTrace();
         }
@@ -45,7 +43,6 @@ public class LoopSound implements Runnable {
         }
         else {
             clip.start();
-            clip.stop();
         }
     }
 }

@@ -1,9 +1,12 @@
-package Screen.GamePlayScrolling;
+package Multiplayer;
 
 import GameObjects.Giant;
 import Lists.*;
 import Multiplayer.ClientGameEventHandler;
 import Multiplayer.ClientScroll;
+import Screen.GamePlayScrolling.GameEventHandler;
+import Screen.GamePlayScrolling.ImageLoader;
+import Screen.GamePlayScrolling.Scroll;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -13,7 +16,7 @@ import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.imageio.ImageIO;
 
-public class Background {
+public class ClientBackground {
     private BufferedImage image;
 
     private int x;
@@ -95,11 +98,11 @@ public class Background {
         }
 
     }
-    public Background() throws IOException {
+    public ClientBackground() throws IOException {
         this(0,0);
     }
 
-    public Background(int x, int y) {
+    public ClientBackground(int x, int y) {
         this.x = x;
         this.y = y;
 
@@ -153,11 +156,11 @@ public class Background {
 //        BufferedImage i = ImageIO.read(new File("C:\\Users\\Amin\\IdeaProjects\\ChickenInvaders\\src\\GameAssets\\star_wars_logo_PNG36.png"));
 //        g.drawImage(logo, null, 20, 300);
 //        g.drawImage(death_star, null, 1000, 250);
-        if (!GameEventHandler.spaceship.isExploded){
-            g.drawImage(destroyer, null, GameEventHandler.spaceship.x_coordinate, GameEventHandler.spaceship.y_coordinate);
+        if (!ClientGameEventHandler.spaceship.isExploded){
+            g.drawImage(destroyer, null, ClientGameEventHandler.spaceship.x_coordinate, ClientGameEventHandler.spaceship.y_coordinate);
         }
         else {
-            g.drawImage(destroyer_respawn, null, GameEventHandler.spaceship.x_coordinate, GameEventHandler.spaceship.y_coordinate);
+            g.drawImage(destroyer_respawn, null, ClientGameEventHandler.spaceship.x_coordinate, ClientGameEventHandler.spaceship.y_coordinate);
         }
         g.drawImage(engineBackground, null, 10, 700);
         g.drawImage(heart, null, 25, 725);
@@ -253,42 +256,18 @@ public class Background {
             }
         }
 
-        if (GameEventHandler.spaceship.isExploded){
-            if (GameEventHandler.spaceship.explosionTimer < 4000){
-                g.drawImage(spaceshipExplosion, null, GameEventHandler.spaceship.explosionX, GameEventHandler.spaceship.explosionY);
+        if (ClientGameEventHandler.spaceship.isExploded){
+            if (ClientGameEventHandler.spaceship.explosionTimer < 4000){
+                g.drawImage(spaceshipExplosion, null, ClientGameEventHandler.spaceship.explosionX, ClientGameEventHandler.spaceship.explosionY);
             }
         }
 
-        if (Scroll.isOverheated){
+        if (ClientScroll.isOverheated){
 //            LoopSound loopSound = new LoopSound("src/imperial_march.wav", false);
             g.drawImage(overheat, null, 400, 300);
 //            window.fillRoundRect(750, 300, 100, 50, 50, 50);
 //            window.setColor(Color.getHSBColor(0, 0.2f + 0.6f, 0.5f));
         }
-
-        if (Scroll.waveIndexDraw){
-            if (Scroll.waveIndex == 1){
-                g.drawImage(waveLogoI, null, 500, 300);
-            }
-            if (Scroll.waveIndex == 2){
-                g.drawImage(waveLogoII, null, 500, 300);
-            }
-            if (Scroll.waveIndex == 3){
-                g.drawImage(waveLogoIII, null, 500, 300);
-            }
-            if (Scroll.waveIndex == 4){
-                g.drawImage(waveLogoIV, null, 500, 300);
-            }
-        }
-
-
-//        try {
-//            Graphics2D g = (Graphics2D) window;
-//            BufferedImage i = ImageIO.read(new File("C:\\Users\\Amin\\IdeaProjects\\StarWars\\src\\GameAssets\\death_star.png"));
-//            g.drawImage(i, null, 1000, 250);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
 
     }
 

@@ -3,11 +3,10 @@ package Screen;
 import GameObjects.Bullet;
 import GameObjects.Spaceship;
 import Lists.ListOfBullets;
-import MovingBackground.ScrollingBackground;
-import Others.GameEventHandler;
+import Screen.GamePlayScrolling.GameEventHandler;
+import Screen.GamePlayScrolling.Scroll;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -82,11 +81,11 @@ public class ScreenPainter extends JFrame implements Runnable{
                     }
                     ////////////////////////////////////// Next Step //////////////////////////////////////
                     try {
-                        if (GameEventHandler.isDragged)
+                        if (Scroll.isDragged)
                         {
                             timerD += 20;
                         }
-                        if (GameEventHandler.isPressed)
+                        if (Scroll.isPressed)
                         {
                             timerP += 20;
                         }

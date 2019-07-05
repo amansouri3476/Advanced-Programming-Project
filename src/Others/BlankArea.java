@@ -1,7 +1,7 @@
 package Others;/*
  * Others.BlankArea.java is used by:
  *    MouseEventDemo.java.
- *    Others.GameEventHandler.java
+ *    Screen.GamePlayScrolling.GameEventHandler.java
  */
 
 import javax.swing.*;

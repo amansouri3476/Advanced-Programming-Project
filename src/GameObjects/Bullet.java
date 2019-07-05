@@ -15,15 +15,16 @@ public class Bullet extends coordinatedObject implements hasRange, hasCoordinate
     public JLabel bulletLabel;
     public Container container;
 
-    Bullet(int x,int y, double damage, Container container){
+    Bullet(int x,int y, double damage){
         this.setX(x);
         this.setY(y);
         this.damage = damage;
         this.bulletMover = new BulletMover();
         ListOfBullets.Bullets.add(this);
+        ListOfBullets.heat += 5;
         System.out.println("Number of Bullets Created:" + ListOfBullets.Bullets.size());
+        LoopSound loopSound = new LoopSound("C:\\Users\\Amin\\IdeaProjects\\StarWars\\src\\GameAssets\\shoot.wav", false);
         this.bulletLabel = new JLabel(new ImageIcon("C:\\Users\\Amin\\IdeaProjects\\StarWars\\src\\GameAssets\\shuttle.png"));
-        this.container = container;
     }
 
     public boolean isNotScreen(){
@@ -36,4 +37,5 @@ public class Bullet extends coordinatedObject implements hasRange, hasCoordinate
     public boolean isInRange(coordinatedObject object) {
         return false;
     }
+
 }
