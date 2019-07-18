@@ -25,6 +25,41 @@ public class GameEventHandler extends JFrame implements Runnable {
     public static JFrame gameFrame;
     public static int gameWidth = 2000;
     public static int gameHeight = 1500;
+
+    public GameEventHandler(Container container) {
+
+        container.removeAll();
+
+        JLabel spaceshipLabel = new JLabel();
+        // Transparent 16 x 16 pixel cursor image.
+        BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+
+        Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
+                cursorImg, new Point(0, 0), "blank cursor");
+
+
+        this.spaceship = new Spaceship(getContentPane(), spaceshipLabel);
+
+        container.setCursor(blankCursor);
+
+        Scroll scroll = null;
+        try {
+            scroll = new Scroll();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("new scrolling background");
+        ((Component)scroll).setFocusable(true);
+        container.add(scroll);
+
+        container.setSize(gameWidth, gameHeight);
+
+        container.validate();
+        container.repaint();
+
+        container.setVisible(true);
+    }
+
     public void run() {
 
         createAndShowGUI();

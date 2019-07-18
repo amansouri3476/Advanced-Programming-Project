@@ -228,6 +228,7 @@ public class MenuFrame extends JFrame {
 
     }
 
+//    this function is called when a back button with the destination menu is pressed.
     private void menuFrame(Container contentPane) throws IOException {
         contentPane.removeAll();
         int width = 200;
@@ -454,6 +455,7 @@ public class MenuFrame extends JFrame {
         });
     }
 
+//    this function creates the join menu frame
     private void join(Container contentPane) {
         int radius = 10;
         // Transparent 16 x 16 pixel cursor image.
@@ -533,10 +535,12 @@ public class MenuFrame extends JFrame {
         });
     }
 
+//    this function initiates a gameClient when join button of join menu is pressed.
     private void joinGame(Container contentPane, String portNumber, String ipAddress) {
         GameClient gameClient = new GameClient(contentPane, portNumber, ipAddress);
     }
 
+//    this function creates the ad-hoc menu frame
     private void adHoc(Container contentPane) {
         int radius = 10;
         // Transparent 16 x 16 pixel cursor image.
@@ -634,6 +638,7 @@ public class MenuFrame extends JFrame {
         });
     }
 
+//    this function initiates a serverClient when create button of ad-hoc menu is pressed.
     private void createGame(Container contentPane, JFrame frame, String port_number, String player_number, String level_number) {
         GameServer gameServer = new GameServer(contentPane, frame, port_number, player_number, level_number);
     }

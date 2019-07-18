@@ -4,6 +4,8 @@ import Interfaces.hasCoordinates;
 import Lists.BombList;
 import Movers.BombMover;
 
+import java.io.Serializable;
+
 public class Bomb extends coordinatedObject implements hasCoordinates {
     public BombMover bombMover;
     public int speed = 2;

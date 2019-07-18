@@ -118,7 +118,7 @@ public class MainMenu extends JFrame {
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
-                GameEventHandler gameEventHandler = new GameEventHandler();
+                GameEventHandler gameEventHandler = new GameEventHandler(getContentPane());
 //                GameUpdate gameUpdate = new GameUpdate();
                 gameEventHandler.run();
 //                gameScreen.run();

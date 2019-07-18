@@ -10,7 +10,7 @@ public class ListOfEnemyGroups {
     public synchronized static void updateList(){
 
         for (EnemyGroup enemyGroup : EnemyGroups) {
-            System.out.println("EnemyGroups updateList");
+//            System.out.println("EnemyGroups updateList");
             if (enemyGroup.ListOfFighters.size() == 0){
                 System.out.println("EnemyGroup Removed");
                 EnemyGroups.remove(enemyGroup);

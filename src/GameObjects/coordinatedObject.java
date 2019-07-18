@@ -2,7 +2,9 @@ package GameObjects;
 
 import Interfaces.hasCoordinates;
 
-public class coordinatedObject implements hasCoordinates {
+import java.io.Serializable;
+
+public class coordinatedObject implements hasCoordinates, Serializable {
     public int x_coordinate;
     public int y_coordinate;
     public int destination_x;

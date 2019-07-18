@@ -8,6 +8,7 @@ import Movers.BulletMover;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.Serializable;
 
 public class Bullet extends coordinatedObject implements hasRange, hasCoordinates {
     double damage;

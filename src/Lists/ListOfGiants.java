@@ -9,7 +9,7 @@ public class ListOfGiants {
     public synchronized static void updateList(){
 
         for (Giant giant : Giants) {
-            System.out.println();
+//            System.out.println();
             if (giant.isDead){
                 System.out.println("Giant Removed");
                 giant.death();

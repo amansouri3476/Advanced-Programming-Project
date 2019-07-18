@@ -1,6 +1,6 @@
 package Multiplayer;
 
-import Lists.ListOfUsers;
+import Lists.*;
 import MovingBackground.ScrollingBackground;
 import Screen.GamePlayScrolling.GameEventHandler;
 
@@ -29,6 +29,8 @@ public class GameServer implements Runnable {
     private int radius = 10;
 
     public static ArrayList<String> joinedPlayers = new ArrayList<>();
+    private static NetworkMessage networkMessage = new NetworkMessage();
+    private static int counter = 1;
 
     public GameServer(Container contentPane, JFrame frame, String port_number, String player_number, String level_number) {
 
@@ -70,7 +72,18 @@ public class GameServer implements Runnable {
 
         container.setVisible(true);
 
-        run();
+        bStartGame.addActionListener(e -> {
+            System.out.println("Server Started The Game!");
+//            container.setVisible(false);
+            Thread thread1 = new Thread(() -> {
+                GameEventHandler gameEventHandler = new GameEventHandler(container);
+                gameEventHandler.run();
+            });
+            thread1.start(); /// preventing message passing from being blocked by the beginning of this thread.
+
+            run();
+        });
+
     }
 
     protected JButton addButton(String buttonName, int x, int y, int width, int height, int r){
@@ -112,30 +125,24 @@ public class GameServer implements Runnable {
                 ////////////////// Sending Messages to clients //////////////////
                 Thread senderThread = new Thread(() -> {
                     while (true){
-                        System.out.println("send while began");
+//                        System.out.println("send while began");
                         try {
-                            oos.writeObject(new NetworkMessage());
-                        System.out.println("Message was sent to the client");
+                            networkMessage.updateMessage();
+                            checkStatus(networkMessage);
+//                            oos.writeObject(new NetworkMessage());
+                            oos.writeUnshared(networkMessage);
+//                        System.out.println("Message was sent to the client");
                             oos.flush();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                        try {
-                            Thread.sleep(5);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-                senderThread.start();
 
-                ////////////////// Receiving Messages from clients //////////////////
-                Thread receiverThread = new Thread(() -> {
-                    while (true){
-                        System.out.println("recv while began");
+                        ////////////////// Receiving Messages from clients //////////////////
+//                        System.out.println("recv while began");
                         String playerName = null;
                         try {
-                            playerName = ((NetworkMessage) ois.readObject()).username;
+//                            playerName = ((NetworkMessage) ois.readObject()).username;
+                            playerName = ((NetworkMessage) ois.readUnshared()).username;
                         } catch (IOException | ClassNotFoundException e) {
                             e.printStackTrace();
                         }
@@ -147,13 +154,13 @@ public class GameServer implements Runnable {
 //                        System.out.println(message);
 //                        messages.append(message);
                         try {
-                            Thread.sleep(50);
+                            Thread.sleep(5);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
                     }
                 });
-                receiverThread.start();
+                senderThread.start();
 
 
             } catch (IOException e) {
@@ -166,17 +173,17 @@ public class GameServer implements Runnable {
         });
         thread.start();
 
+    }
 
-        bStartGame.addActionListener(e -> {
-            System.out.println("Server Started The Game!");
-            container.setVisible(false);
-            Thread thread1 = new Thread(() -> {
-                GameEventHandler gameEventHandler = new GameEventHandler();
-                gameEventHandler.run();
-            });
-            thread1.start(); /// preventing message passing from being blocked by the beginning of this thread.
-
-        });
+    private void checkStatus(NetworkMessage networkMessage) {
+        if (counter == 50){
+            System.out.println("Enemy 0 x coordinate: " + networkMessage.Enemies.get(0).x_coordinate);
+            System.out.println("Number of Bullets: " + networkMessage.Bullets.size());
+            System.out.println("Number of Enemies: " + networkMessage.Enemies.size());
+            System.out.println("Server ss x coordinate: " + networkMessage.spaceship_x);
+            counter = 1;
+        }
+        else counter++;
     }
 
     private void showNameOnScreen(String playerName) {

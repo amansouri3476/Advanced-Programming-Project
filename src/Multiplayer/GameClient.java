@@ -25,6 +25,9 @@ public class GameClient implements Runnable {
     private JButton bSpectator;
     private JButton bPlayer;
     public static NetworkMessage serverUpdateMessage;
+    private static NetworkMessage networkMessage = new NetworkMessage();
+    private static int counter = 1;
+
 
     public GameClient(Container contentPane, String portNumber, String ipAddress) {
         int radius = 10;
@@ -69,7 +72,17 @@ public class GameClient implements Runnable {
 
         container.setVisible(true);
 
-        run();
+        bSpectator.addActionListener(e -> {
+            Thread thread1 = new Thread(() -> {
+//                container.setVisible(false);
+                ClientGameEventHandler clientGameEventHandler = new ClientGameEventHandler(true, container);
+                clientGameEventHandler.run();
+            });
+            thread1.start(); /// preventing message passing from being blocked by the beginning of this thread.
+
+            run();
+        });
+
 
     }
 
@@ -106,14 +119,33 @@ public class GameClient implements Runnable {
                      ////////////////// Sending Messages to the Server //////////////////
                         Thread senderThread = new Thread(() -> {
                             while (true){
-                                System.out.println("sender while began");
+//                                System.out.println("sender while began");
                                 //                        oos.writeUnshared(obj);
                                 try {
-                                    oos.writeObject(new NetworkMessage());
+                                    networkMessage.updateMessage();
+//                                    oos.writeObject(new NetworkMessage());
+                                    oos.writeUnshared(networkMessage);
                                     oos.flush();
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
+
+                                ////////////////// Receiving Messages from the Server //////////////////
+//                                System.out.println("recv while began");
+                                try {
+//                                    serverUpdateMessage = (NetworkMessage) ois.readObject();
+                                    serverUpdateMessage = (NetworkMessage) ois.readUnshared();
+                                    decodeMessage();
+                                } catch (IOException | ClassNotFoundException e) {
+                                    e.printStackTrace();
+                                }
+//                                System.out.println("Message received from the server");
+//                        String playerName = ((NetworkMessage) ois.readObject()).username;
+//                        if (!listOfPlayersTextArea.getText().contains(playerName)){
+//                            listOfPlayersTextArea.append("\t" + playerName + "\n");
+//                        }
+//                        System.out.println(message);
+//                        messages.append(message);
                                 try {
                                     Thread.sleep(5);
                                 } catch (InterruptedException e) {
@@ -122,33 +154,7 @@ public class GameClient implements Runnable {
                             }
                         });
                         senderThread.start();
-                    ////////////////// Receiving Messages from the Server //////////////////
-                        Thread receiverThread = new Thread(() -> {
-                            while (true){
-                                System.out.println("recv while began");
-                                try {
-                                    serverUpdateMessage = (NetworkMessage) ois.readObject();
-                                    decodeMessage();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                } catch (ClassNotFoundException e) {
-                                    e.printStackTrace();
-                                }
-                                System.out.println("Message received from the server");
-//                        String playerName = ((NetworkMessage) ois.readObject()).username;
-//                        if (!listOfPlayersTextArea.getText().contains(playerName)){
-//                            listOfPlayersTextArea.append("\t" + playerName + "\n");
-//                        }
-//                        System.out.println(message);
-//                        messages.append(message);
-                                try {
-                                    Thread.sleep(50);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        });
-                        receiverThread.start();
+
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -157,20 +163,15 @@ public class GameClient implements Runnable {
         });
         thread.start();
 
-        bSpectator.addActionListener(e -> {
-            Thread thread1 = new Thread(() -> {
-                container.setVisible(false);
-                ClientGameEventHandler clientGameEventHandler = new ClientGameEventHandler(true);
-                clientGameEventHandler.run();
-            });
-            thread1.start(); /// preventing message passing from being blocked by the beginning of this thread.
-        });
+
         bPlayer.addActionListener(e -> {
 
         });
     }
 
     private void decodeMessage() {
+        ClientGameEventHandler.spaceship.x_coordinate = serverUpdateMessage.spaceship_x;
+        ClientGameEventHandler.spaceship.y_coordinate = serverUpdateMessage.spaceship_y;
         BombList.Bombs = serverUpdateMessage.Bombs;
         ListOfBullets.Bullets = serverUpdateMessage.Bullets;
         ListOfEnemies.Enemies = serverUpdateMessage.Enemies;
@@ -179,5 +180,14 @@ public class GameClient implements Runnable {
         ListOfFirings.Firings = serverUpdateMessage.Firings;
         ListOfGiants.Giants = serverUpdateMessage.Giants;
         ListOfPowerups.Powerups = serverUpdateMessage.Powerups;
+        if (counter == 50){
+            System.out.println("Enemy 0 x coordinate: " + ListOfEnemies.Enemies.get(0).x_coordinate);
+            System.out.println("Number of Bullets: " + ListOfBullets.Bullets.size());
+            System.out.println("Number of Enemies: " + ListOfEnemies.Enemies.size());
+            System.out.println("Server ss x coordinate: " + ClientGameEventHandler.spaceship.x_coordinate);
+            counter = 1;
+        }
+        else counter++;
+
     }
 }

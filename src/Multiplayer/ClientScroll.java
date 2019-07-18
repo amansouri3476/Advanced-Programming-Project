@@ -127,14 +127,14 @@ public class ClientScroll extends Canvas implements MouseMotionListener, MouseLi
                             e.printStackTrace();
                         }
                         ///////////////////// Load lists from server's "network message " /////////////////////
-//                        BombList.Bombs = GameClient.serverUpdateMessage.Bombs;
-//                        ListOfBullets.Bullets = GameClient.serverUpdateMessage.Bullets;
-//                        ListOfEnemies.Enemies = GameClient.serverUpdateMessage.Enemies;
-//                        ListOfEnemyGroups.EnemyGroups = GameClient.serverUpdateMessage.EnemyGroups;
-//                        ListOfExplosions.Explosions = GameClient.serverUpdateMessage.Explosions;
-//                        ListOfFirings.Firings = GameClient.serverUpdateMessage.Firings;
-//                        ListOfGiants.Giants = GameClient.serverUpdateMessage.Giants;
-//                        ListOfPowerups.Powerups = GameClient.serverUpdateMessage.Powerups;
+                        BombList.Bombs = GameClient.serverUpdateMessage.Bombs;
+                        ListOfBullets.Bullets = GameClient.serverUpdateMessage.Bullets;
+                        ListOfEnemies.Enemies = GameClient.serverUpdateMessage.Enemies;
+                        ListOfEnemyGroups.EnemyGroups = GameClient.serverUpdateMessage.EnemyGroups;
+                        ListOfExplosions.Explosions = GameClient.serverUpdateMessage.Explosions;
+                        ListOfFirings.Firings = GameClient.serverUpdateMessage.Firings;
+                        ListOfGiants.Giants = GameClient.serverUpdateMessage.Giants;
+                        ListOfPowerups.Powerups = GameClient.serverUpdateMessage.Powerups;
                         /////////////////////////// Next Step ///////////////////////////
                         try {
                             Thread.sleep(timeStep);

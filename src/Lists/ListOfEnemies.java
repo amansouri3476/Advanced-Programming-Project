@@ -12,7 +12,7 @@ public class ListOfEnemies {
     public synchronized static void updateList(){
 
         for (Enemy enemy : Enemies) {
-            System.out.println();
+//            System.out.println();
             if (enemy.isDead){
                 System.out.println("Enemy Removed");
                 enemy.death();
