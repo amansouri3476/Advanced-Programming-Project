@@ -1,8 +1,10 @@
 package Multiplayer;
 
+import GameObjects.Enemy;
 import Lists.*;
 import MovingBackground.ScrollingBackground;
 import Screen.GamePlayScrolling.GameEventHandler;
+import com.sun.source.tree.NewArrayTree;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,6 +16,7 @@ import java.net.InetSocketAddress;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class GameServer implements Runnable {
 
@@ -112,7 +115,6 @@ public class GameServer implements Runnable {
                 int port = 10005;
                 ssChannel.socket().bind(new InetSocketAddress(port));
 
-                String obj ="testtext";
                 System.out.println("listening to Client");
                 SocketChannel sChannel = ssChannel.accept();
                 System.out.println("Client connected");
@@ -125,34 +127,29 @@ public class GameServer implements Runnable {
                 ////////////////// Sending Messages to clients //////////////////
                 Thread senderThread = new Thread(() -> {
                     while (true){
-//                        System.out.println("send while began");
                         try {
-                            networkMessage.updateMessage();
-                            checkStatus(networkMessage);
-//                            oos.writeObject(new NetworkMessage());
-                            oos.writeUnshared(networkMessage);
-//                        System.out.println("Message was sent to the client");
+                            NetworkMessage message = new NetworkMessage();
+                            checkStatus(message);
+                            oos.writeUnshared(message);
+                            oos.reset();
                             oos.flush();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
 
                         ////////////////// Receiving Messages from clients //////////////////
-//                        System.out.println("recv while began");
-                        String playerName = null;
-                        try {
-//                            playerName = ((NetworkMessage) ois.readObject()).username;
-                            playerName = ((NetworkMessage) ois.readUnshared()).username;
-                        } catch (IOException | ClassNotFoundException e) {
-                            e.printStackTrace();
-                        }
-                        if (!joinedPlayers.contains(playerName)){//// New Player Joined
-                            System.out.println("Entering if clause");
-                            System.out.println(playerName);
-                            showNameOnScreen(playerName);
-                        }
-//                        System.out.println(message);
-//                        messages.append(message);
+//                        String playerName = null;
+//                        try {
+//                            CopyOnWriteArrayList<Enemy> E = ((NetworkMessage) ois.readUnshared()).Enemies;
+//                            System.out.println(E.size());
+//                        } catch (IOException | ClassNotFoundException e) {
+//                            e.printStackTrace();
+//                        }
+//                        if (!joinedPlayers.contains(playerName)){//// New Player Joined
+//                            System.out.println("Entering if clause");
+//                            System.out.println(playerName);
+//                            showNameOnScreen(playerName);
+//                        }
                         try {
                             Thread.sleep(5);
                         } catch (InterruptedException e) {
@@ -168,7 +165,6 @@ public class GameServer implements Runnable {
             }
 //            oos.close();
 
-//            System.out.println("Connection ended");
 
         });
         thread.start();
@@ -176,14 +172,11 @@ public class GameServer implements Runnable {
     }
 
     private void checkStatus(NetworkMessage networkMessage) {
-        if (counter == 50){
-            System.out.println("Enemy 0 x coordinate: " + networkMessage.Enemies.get(0).x_coordinate);
-            System.out.println("Number of Bullets: " + networkMessage.Bullets.size());
-            System.out.println("Number of Enemies: " + networkMessage.Enemies.size());
-            System.out.println("Server ss x coordinate: " + networkMessage.spaceship_x);
-            counter = 1;
-        }
-        else counter++;
+//            System.out.println(networkMessage.a);
+//            System.out.println("Enemy 0 x coordinate: " + networkMessage.Enemies.get(0).x_coordinate);
+//            System.out.println("Number of Bullets: " + networkMessage.Bullets.size());
+//            System.out.println("Number of Enemies: " + networkMessage.Enemies.size());
+//            System.out.println("Server ss x coordinate: " + networkMessage.spaceship_x);
     }
 
     private void showNameOnScreen(String playerName) {

@@ -24,8 +24,6 @@ public class GameClient implements Runnable {
     public JTextArea listOfPlayersTextArea;
     private JButton bSpectator;
     private JButton bPlayer;
-    public static NetworkMessage serverUpdateMessage;
-    private static NetworkMessage networkMessage = new NetworkMessage();
     private static int counter = 1;
 
 
@@ -119,23 +117,18 @@ public class GameClient implements Runnable {
                      ////////////////// Sending Messages to the Server //////////////////
                         Thread senderThread = new Thread(() -> {
                             while (true){
-//                                System.out.println("sender while began");
-                                //                        oos.writeUnshared(obj);
-                                try {
-                                    networkMessage.updateMessage();
-//                                    oos.writeObject(new NetworkMessage());
-                                    oos.writeUnshared(networkMessage);
-                                    oos.flush();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
+//                                try {
+//                                    oos.writeUnshared(new NetworkMessage());
+////                                    oos.reset();
+//                                    oos.flush();
+//                                } catch (IOException e) {
+//                                    e.printStackTrace();
+//                                }
 
                                 ////////////////// Receiving Messages from the Server //////////////////
-//                                System.out.println("recv while began");
                                 try {
-//                                    serverUpdateMessage = (NetworkMessage) ois.readObject();
-                                    serverUpdateMessage = (NetworkMessage) ois.readUnshared();
-                                    decodeMessage();
+                                    NetworkMessage serverUpdateMessage = (NetworkMessage) ois.readUnshared();
+                                    decodeMessage(serverUpdateMessage);
                                 } catch (IOException | ClassNotFoundException e) {
                                     e.printStackTrace();
                                 }
@@ -155,6 +148,8 @@ public class GameClient implements Runnable {
                         });
                         senderThread.start();
 
+                        ///////////////////////////// Test
+
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -169,25 +164,27 @@ public class GameClient implements Runnable {
         });
     }
 
-    private void decodeMessage() {
-        ClientGameEventHandler.spaceship.x_coordinate = serverUpdateMessage.spaceship_x;
-        ClientGameEventHandler.spaceship.y_coordinate = serverUpdateMessage.spaceship_y;
-        BombList.Bombs = serverUpdateMessage.Bombs;
-        ListOfBullets.Bullets = serverUpdateMessage.Bullets;
+    private void decodeMessage(NetworkMessage serverUpdateMessage) {
+//        System.out.println(serverUpdateMessage.Enemies.get(0).x_coordinate);
+//        System.out.println(serverUpdateMessage.a);
+//        ClientGameEventHandler.spaceship.x_coordinate = serverUpdateMessage.spaceship_x;
+//        ClientGameEventHandler.spaceship.y_coordinate = serverUpdateMessage.spaceship_y;
+//        BombList.Bombs = serverUpdateMessage.Bombs;
+//        ListOfBullets.Bullets = serverUpdateMessage.Bullets;
         ListOfEnemies.Enemies = serverUpdateMessage.Enemies;
-        ListOfEnemyGroups.EnemyGroups = serverUpdateMessage.EnemyGroups;
-        ListOfExplosions.Explosions = serverUpdateMessage.Explosions;
-        ListOfFirings.Firings = serverUpdateMessage.Firings;
-        ListOfGiants.Giants = serverUpdateMessage.Giants;
-        ListOfPowerups.Powerups = serverUpdateMessage.Powerups;
-        if (counter == 50){
-            System.out.println("Enemy 0 x coordinate: " + ListOfEnemies.Enemies.get(0).x_coordinate);
-            System.out.println("Number of Bullets: " + ListOfBullets.Bullets.size());
-            System.out.println("Number of Enemies: " + ListOfEnemies.Enemies.size());
-            System.out.println("Server ss x coordinate: " + ClientGameEventHandler.spaceship.x_coordinate);
-            counter = 1;
-        }
-        else counter++;
+//        ListOfEnemyGroups.EnemyGroups = serverUpdateMessage.EnemyGroups;
+//        ListOfExplosions.Explosions = serverUpdateMessage.Explosions;
+//        ListOfFirings.Firings = serverUpdateMessage.Firings;
+//        ListOfGiants.Giants = serverUpdateMessage.Giants;
+//        ListOfPowerups.Powerups = serverUpdateMessage.Powerups;
+//        if (counter == 100){
+//            System.out.println("Enemy 0 x coordinate: " + serverUpdateMessage.Enemies.get(0).x_coordinate);
+//            System.out.println("Number of Bullets: " + serverUpdateMessage.Bullets.size());
+//            System.out.println("Number of Enemies: " + serverUpdateMessage.Enemies.size());
+//            System.out.println("Server ss x coordinate: " + ClientGameEventHandler.spaceship.x_coordinate);
+//            counter = 1;
+//        }
+//        else counter++;
 
     }
 }

@@ -5,8 +5,8 @@ import GameObjects.coordinatedObject;
 
 public class BombMover implements Mover {
     double speedX, speedY;
-    public boolean reached_x;
-    public boolean reached_y;
+    public boolean reached_x = false;
+    public boolean reached_y = false;
     public double hiddenX;
     public double hiddenY;
     public BombMover(double speed_x, double speed_y){

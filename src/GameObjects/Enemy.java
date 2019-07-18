@@ -11,7 +11,7 @@ public class Enemy extends coordinatedObject implements hasRange, hasCoordinates
     public String type;
     public EnemyMover enemyMover;
     public int health=10;
-    public JLabel enemyLabel;
+    public transient JLabel enemyLabel;
     int rangeX=40;
     int rangeY=40;
     public int explosionTimer=0;
