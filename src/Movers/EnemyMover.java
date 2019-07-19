@@ -1,9 +1,14 @@
 package Movers;
 
+import GameObjects.Enemy;
 import GameObjects.coordinatedObject;
 
 public class EnemyMover implements Mover {
 
+    public boolean reached_x = false;
+    public boolean reached_y = false;
+    public double hiddenX;
+    public double hiddenY;
     public int phase;
     public int velocityX;
     public int velocityY;
@@ -15,23 +20,36 @@ public class EnemyMover implements Mover {
     public boolean destinationActive_y=false;
 
     public EnemyMover(int phase, String movement, int y_dest){
+
         this.phase = phase;
         this.movement = movement;
         this.stop_y = y_dest;
     }
+
+    public EnemyMover(Enemy enemy, int phase, String movement, int y_dest) {
+        hiddenX = enemy.x_coordinate;
+        hiddenY = enemy.y_coordinate;
+
+        this.phase = phase;
+        this.movement = movement;
+        this.stop_y = y_dest;
+    }
+
     @Override
     public void changeX(coordinatedObject object) {
         ////////////////// when there is a destination for the object //////////////////
         if (destinationActive_x){
-            if (Math.sqrt(Math.pow(Math.abs(object.x_coordinate-object.destination_x), 2) + Math.pow(Math.abs(object.y_coordinate-object.destination_y), 2)) < 3 ){
+            if (Math.sqrt(Math.pow(Math.abs(object.x_coordinate-object.destination_x), 2) + Math.pow(Math.abs(object.y_coordinate-object.destination_y), 2)) < 10 ){
                 object.setX(object.destination_x);
                 destinationActive_x = false;
+                reached_x = true;
             }
             else {
-                int delta_x = (int) Math.signum(object.destination_x - object.x_coordinate);
-                int delta_y = (int) Math.signum(object.destination_y - object.y_coordinate);
+                int delta_x = (object.destination_x - object.x_coordinate);
+                int delta_y = (object.destination_y - object.y_coordinate);
                 double phi = Math.atan2(delta_y, delta_x);
-                object.setX(object.x_coordinate + (int) (3 * Math.cos(phi)));
+                hiddenX += (3 * Math.cos(phi));
+                object.setX((int) hiddenX);
             }
         }
         ////////////////// Normal movement of the object //////////////////
@@ -86,16 +104,19 @@ public class EnemyMover implements Mover {
     public void changeY(coordinatedObject object) {
         ////////////////// when there is a destination for the object //////////////////
         if (destinationActive_y){
-            if (Math.sqrt(Math.pow(Math.abs(object.x_coordinate-object.destination_x), 2) + Math.pow(Math.abs(object.y_coordinate-object.destination_y), 2)) < 3 ){
+            if (Math.sqrt(Math.pow(Math.abs(object.x_coordinate-object.destination_x), 2) + Math.pow(Math.abs(object.y_coordinate-object.destination_y), 2)) < 10 ){
                 object.setY(object.destination_y);
                 destinationActive_y = false;
+                reached_y = true;
             }
             else {
-                int delta_x = (int) Math.signum(object.destination_x - object.x_coordinate);
-                int delta_y = (int) Math.signum(object.destination_y - object.y_coordinate);
+                int delta_x = (object.destination_x - object.x_coordinate);
+                int delta_y = (object.destination_y - object.y_coordinate);
                 double phi = Math.atan2(delta_y, delta_x);
-                object.setY(object.y_coordinate + (int) (3 * Math.sin(phi)));
+                hiddenY += (3 * Math.sin(phi));
+                object.setY((int) hiddenY);
             }
+
         }
         ////////////////// Normal movement of the object //////////////////
         else {

@@ -7,8 +7,8 @@ public class BombMover implements Mover {
     double speedX, speedY;
     public boolean reached_x = false;
     public boolean reached_y = false;
-    public double hiddenX;
-    public double hiddenY;
+    private double hiddenX;
+    private double hiddenY;
     public BombMover(double speed_x, double speed_y){
         this.speedX = speed_x;
         this.speedY = speed_y;

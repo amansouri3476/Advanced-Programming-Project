@@ -30,6 +30,7 @@ public class Main {
             2. Scoreboard for all players needs to be added.
             3. Different Players Spaceships should be displayed on different screens (needs to send their location.)
             4. engine heat of each player should be displayed properly according to the number of bullets it has shot.
+            5. Checking whether or not more than one client is able to join the game, both as an spectator or a player.
          */
     }
 }

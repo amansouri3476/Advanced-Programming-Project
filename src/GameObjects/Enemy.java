@@ -27,7 +27,7 @@ public class Enemy extends coordinatedObject implements hasRange, hasCoordinates
         this.inGroupX = positionXGroup;
         this.inGroupY = positionYGroup;
         this.type = type;
-        this.enemyMover = new EnemyMover(1, movement, y + 600);
+        this.enemyMover = new EnemyMover(this, 1, movement, y + 600);
         ListOfEnemies.Enemies.add(this);
         this.enemyLabel = new JLabel(new ImageIcon("C:\\Users\\Amin\\IdeaProjects\\StarWars\\src\\GameAssets\\TIE_small.png"));
 
@@ -36,7 +36,7 @@ public class Enemy extends coordinatedObject implements hasRange, hasCoordinates
         this.setX(x);
         this.setY(y);
         this.type = type;
-        this.enemyMover = new EnemyMover(1, movement, y + 600);
+        this.enemyMover = new EnemyMover(this, 1, movement, y + 600);
         ListOfEnemies.Enemies.add(this);
         this.enemyLabel = new JLabel(new ImageIcon("C:\\Users\\Amin\\IdeaProjects\\StarWars\\src\\GameAssets\\TIE_small.png"));
 
