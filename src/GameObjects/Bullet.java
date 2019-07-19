@@ -16,7 +16,7 @@ public class Bullet extends coordinatedObject implements hasRange, hasCoordinate
     public JLabel bulletLabel;
     public Container container;
 
-    Bullet(int x,int y, double damage){
+    public Bullet(int x, int y, double damage){
         this.setX(x);
         this.setY(y);
         this.damage = damage;

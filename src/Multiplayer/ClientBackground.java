@@ -4,9 +4,7 @@ import GameObjects.Giant;
 import Lists.*;
 import Multiplayer.ClientGameEventHandler;
 import Multiplayer.ClientScroll;
-import Screen.GamePlayScrolling.GameEventHandler;
 import Screen.GamePlayScrolling.ImageLoader;
-import Screen.GamePlayScrolling.Scroll;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;

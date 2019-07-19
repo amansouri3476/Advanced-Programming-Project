@@ -27,7 +27,7 @@ public class ClientGameEventHandler extends JFrame implements Runnable {
     public static int gameHeight = 1500;
     public static boolean isSpectator;
 
-    public ClientGameEventHandler(boolean b, Container container) {
+    public ClientGameEventHandler(boolean isSpectator, Container container) {
 
         container.removeAll();
 

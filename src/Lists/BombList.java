@@ -8,6 +8,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class BombList {
     public static CopyOnWriteArrayList<Bomb> Bombs = new CopyOnWriteArrayList<>();
+    public static CopyOnWriteArrayList<Bomb> clientBombs = new CopyOnWriteArrayList<>();
 
     public synchronized static void updateList(){
         if (!Bombs.isEmpty()){

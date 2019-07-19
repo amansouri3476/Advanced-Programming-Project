@@ -81,6 +81,16 @@ public class GameClient implements Runnable {
             run();
         });
 
+        bPlayer.addActionListener(e -> {
+            Thread thread = new Thread(() -> {
+//                container.setVisible(false);
+                ClientGameEventHandler clientGameEventHandler = new ClientGameEventHandler(false, container);
+                clientGameEventHandler.run();
+            });
+            thread.start(); /// preventing message passing from being blocked by the beginning of this thread.
+
+            run();
+        });
 
     }
 
@@ -108,47 +118,43 @@ public class GameClient implements Runnable {
                 sChannel.configureBlocking(true);
                 if (sChannel.connect(new InetSocketAddress("localhost", 10005))) {
 
-                    ObjectOutputStream oos =
+                    final ObjectOutputStream oos =
                             new ObjectOutputStream(sChannel.socket().getOutputStream());
                     oos.flush();
-                    ObjectInputStream ois =
+                    final ObjectInputStream ois =
                             new ObjectInputStream(sChannel.socket().getInputStream());
 
-                     ////////////////// Sending Messages to the Server //////////////////
-                        Thread senderThread = new Thread(() -> {
-                            while (true){
-//                                try {
-//                                    oos.writeUnshared(new NetworkMessage());
-////                                    oos.reset();
-//                                    oos.flush();
-//                                } catch (IOException e) {
-//                                    e.printStackTrace();
-//                                }
 
+                     ////////////////// Receiving Messages from the Server //////////////////
+                        Thread receiverThread = new Thread(() -> {
+                            while (true){
+//                                System.out.println(">>>>>>>>>>>>>>Client");
                                 ////////////////// Receiving Messages from the Server //////////////////
                                 try {
+                                    //////////////
                                     NetworkMessage serverUpdateMessage = (NetworkMessage) ois.readUnshared();
                                     decodeMessage(serverUpdateMessage);
-                                } catch (IOException | ClassNotFoundException e) {
+
+                                    Thread.sleep(2);
+                                    //////////////
+                                    NetworkMessage message = new NetworkMessage(ListOfBullets.clientBullets, BombList.clientBombs);
+                                    checkStatus(message);
+                                    oos.writeUnshared(message);
+                                    oos.reset();
+                                    oos.flush();
+                                    refreshClientLists();
+                                } catch (IOException | ClassNotFoundException | InterruptedException e) {
                                     e.printStackTrace();
                                 }
-//                                System.out.println("Message received from the server");
-//                        String playerName = ((NetworkMessage) ois.readObject()).username;
-//                        if (!listOfPlayersTextArea.getText().contains(playerName)){
-//                            listOfPlayersTextArea.append("\t" + playerName + "\n");
-//                        }
-//                        System.out.println(message);
-//                        messages.append(message);
-                                try {
-                                    Thread.sleep(5);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
+
+//                                try {
+//                                    Thread.sleep(5);
+//                                } catch (InterruptedException e) {
+//                                    e.printStackTrace();
+//                                }
                             }
                         });
-                        senderThread.start();
-
-                        ///////////////////////////// Test
+                        receiverThread.start();
 
                 }
             } catch (IOException e) {
@@ -158,25 +164,27 @@ public class GameClient implements Runnable {
         });
         thread.start();
 
+    }
 
-        bPlayer.addActionListener(e -> {
-
-        });
+    private void refreshClientLists() {
+        ListOfBullets.clientBullets.clear();
+        BombList.clientBombs.clear();
     }
 
     private void decodeMessage(NetworkMessage serverUpdateMessage) {
-//        System.out.println(serverUpdateMessage.Enemies.get(0).x_coordinate);
+        System.out.println(">>>>>>>>> Number of bullets before receiving from the server: " + ListOfBullets.Bullets.size());
+        System.out.println(">>>>>>>>> Number of bullets sent from the server: " + serverUpdateMessage.Bullets.size());
 //        System.out.println(serverUpdateMessage.a);
 //        ClientGameEventHandler.spaceship.x_coordinate = serverUpdateMessage.spaceship_x;
 //        ClientGameEventHandler.spaceship.y_coordinate = serverUpdateMessage.spaceship_y;
-//        BombList.Bombs = serverUpdateMessage.Bombs;
-//        ListOfBullets.Bullets = serverUpdateMessage.Bullets;
+        BombList.Bombs = serverUpdateMessage.Bombs;
+        ListOfBullets.Bullets = serverUpdateMessage.Bullets;
         ListOfEnemies.Enemies = serverUpdateMessage.Enemies;
-//        ListOfEnemyGroups.EnemyGroups = serverUpdateMessage.EnemyGroups;
-//        ListOfExplosions.Explosions = serverUpdateMessage.Explosions;
-//        ListOfFirings.Firings = serverUpdateMessage.Firings;
-//        ListOfGiants.Giants = serverUpdateMessage.Giants;
-//        ListOfPowerups.Powerups = serverUpdateMessage.Powerups;
+        ListOfEnemyGroups.EnemyGroups = serverUpdateMessage.EnemyGroups;
+        ListOfExplosions.Explosions = serverUpdateMessage.Explosions;
+        ListOfFirings.Firings = serverUpdateMessage.Firings;
+        ListOfGiants.Giants = serverUpdateMessage.Giants;
+        ListOfPowerups.Powerups = serverUpdateMessage.Powerups;
 //        if (counter == 100){
 //            System.out.println("Enemy 0 x coordinate: " + serverUpdateMessage.Enemies.get(0).x_coordinate);
 //            System.out.println("Number of Bullets: " + serverUpdateMessage.Bullets.size());
@@ -186,5 +194,12 @@ public class GameClient implements Runnable {
 //        }
 //        else counter++;
 
+    }
+    private void checkStatus(NetworkMessage networkMessage) {
+//            System.out.println(networkMessage.a);
+//            System.out.println("Enemy 0 x coordinate: " + networkMessage.Enemies.get(0).x_coordinate);
+//            System.out.println("Number of Bullets: " + networkMessage.Bullets.size());
+//            System.out.println("Number of Enemies: " + networkMessage.Enemies.size());
+//            System.out.println("Server ss x coordinate: " + networkMessage.spaceship_x);
     }
 }
