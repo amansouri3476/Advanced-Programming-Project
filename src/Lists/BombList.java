@@ -3,6 +3,7 @@ package Lists;
 import GameObjects.Bomb;
 import GameObjects.Enemy;
 import GameObjects.LoopSound;
+import Menu.Scorer;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -18,6 +19,7 @@ public class BombList {
                 if (bomb.bombMover.reached_x && bomb.bombMover.reached_y){
                     for (Enemy enemy: ListOfEnemies.Enemies){
                         enemy.isDead = true;
+                        Scorer.bombScore(bomb);
                     }
                     LoopSound loopSound = new LoopSound("C:\\Users\\Amin\\IdeaProjects\\StarWars\\src\\GameAssets\\Depth_Charge_Short.wav", false);
                     ListOfExplosions.updateList();

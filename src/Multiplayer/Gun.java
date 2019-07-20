@@ -25,17 +25,6 @@ public class Gun {
         this.spaceshipLabel = spaceshipLabel;
     }
 
-    //    public static void singleShot(int x, int y, Container container, int damage){
-//        System.out.println("Single Shot Tried");
-//        System.out.println("Single Shot Accomplished");
-//        Bullet bullet = new Bullet(x, y, damage, container);
-//        container.setLayout(null);
-//        container.add(bullet.bulletLabel, 0);
-//        bullet.bulletLabel.setBounds(x, y, 100, 100);
-//        container.validate();
-//        container.repaint();
-//        container.setVisible(true);
-//        }
     public static void singleShot(int x, int y, int damage){
         System.out.println("Single Shot Tried");
         if (!ClientScroll.isOverheated){
@@ -47,20 +36,7 @@ public class Gun {
 
     }
 
-    //    public synchronized static void longShotD(int x, int y, Container container, int damage){
-//        System.out.println("Long Shot Tried");
-//        if (ClientScroll.timerD % 200 == 0){
-//            ClientScroll.timerD = 0;
-//            System.out.println("Long Shot Accomplished");
-//            Bullet bullet = new Bullet(x, y, damage, container);
-//            container.setLayout(null);
-//            container.add(bullet.bulletLabel, 0);
-//            bullet.bulletLabel.setBounds(x, y, 100, 100);
-//            container.validate();
-//            container.repaint();
-//            container.setVisible(true);
-//        }
-//    }
+
     public synchronized static void longShotD(int x, int y, int damage){
         System.out.println("Long Shot Tried");
         if (ClientScroll.timerD % 200 == 0 && !ClientScroll.isOverheated){
@@ -68,27 +44,10 @@ public class Gun {
             System.out.println("Long Shot Accomplished");
             Bullet bullet = new Bullet(x, y, damage);
             ListOfBullets.clientBullets.add(bullet);
-//            bullet.bulletLabel.setBounds(x, y, 100, 100);
-//            container.validate();
-//            container.repaint();
-//            container.setVisible(true);
+
         }
     }
-    //    public synchronized static void longShotP(int x, int y, Container container, int damage){
-//        System.out.println("Long Shot Tried");
-//        if (ClientScroll.timerP % 400 == 0){
-//            ClientScroll.timerP = 0;
-//            System.out.println("Long Shot Accomplished");
-//            Bullet bullet = new Bullet(x, y, damage, container);
-//            container.setLayout(null);
-//            container.add(bullet.bulletLabel, 0);
-//            bullet.bulletLabel.setBounds(x, y, 100, 100);
-//            container.validate();
-//            container.repaint();
-//            container.setVisible(true);
-//        }
-//
-//    }
+
     public synchronized static void longShotP(int x, int y, int damage){
         System.out.println("Long Shot Tried");
         if (ClientScroll.timerP % 200 == 0 && !ClientScroll.isOverheated){

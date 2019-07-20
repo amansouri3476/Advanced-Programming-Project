@@ -148,7 +148,12 @@ public class Background {
 
         //////////// Moving Background Finished ////////////
 
+        //////////// Displaying player's score ////////////
         Graphics2D g = (Graphics2D) window;
+        g.setFont(new Font("Georgia", Font.ITALIC, 42));
+        g.setColor(Color.ORANGE);
+        g.drawString(String.valueOf(ListOfUsers.getPlayerObjByUsername(ListOfUsers.selectedUser).score), 20, 100);
+        ///////////////////////////////////////////////////
 
 //        BufferedImage i = ImageIO.read(new File("C:\\Users\\Amin\\IdeaProjects\\ChickenInvaders\\src\\GameAssets\\star_wars_logo_PNG36.png"));
 //        g.drawImage(logo, null, 20, 300);

@@ -4,6 +4,9 @@ import GameObjects.*;
 import Lists.*;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class NetworkMessage implements Serializable {
@@ -18,6 +21,8 @@ public class NetworkMessage implements Serializable {
     CopyOnWriteArrayList<EnemyFire> Firings;
     CopyOnWriteArrayList<Giant> Giants;
     CopyOnWriteArrayList<Powerup> Powerups;
+    Dictionary scoreDict;
+
     NetworkMessage(){
 //        int spaceship_x = GameEventHandler.spaceship.x_coordinate;
 //        int spaceship_y = GameEventHandler.spaceship.y_coordinate;
@@ -30,12 +35,31 @@ public class NetworkMessage implements Serializable {
         this.Firings = ListOfFirings.Firings;
         this.Giants = ListOfGiants.Giants;
         this.Powerups = ListOfPowerups.Powerups;
+
+//        this.scoreDict = scoreDictionary(GameServer.joinedPlayers);
+    }
+
+    private Dictionary scoreDictionary(ArrayList<String> joinedPlayers) {
+        Dictionary scores = new Hashtable();
+
+        for (String joinedPlayer: joinedPlayers){
+            scores.put(joinedPlayer, ListOfUsers.getPlayerObjByUsername(joinedPlayer).score);
+        }
+
+        return scores;
     }
 
 
     public NetworkMessage(CopyOnWriteArrayList<Bullet> bullets, CopyOnWriteArrayList<Bomb> bombs) {
-        this.Bombs = null;
-        this.Bullets = bullets;
+        if (bombs.size() == 0){
+            this.Bombs = null;
+        }
+        else this.Bombs = bombs;
+
+        if (bullets.size() == 0){
+            this.Bullets = null;
+        }
+        else this.Bullets = bullets;
 
         this.Enemies = null;
         this.EnemyGroups = null;

@@ -4,6 +4,7 @@ package GameObjects;
 import Interfaces.hasCoordinates;
 import Interfaces.hasRange;
 import Lists.ListOfBullets;
+import Lists.ListOfUsers;
 import Movers.BulletMover;
 
 import javax.swing.*;
@@ -11,12 +12,15 @@ import java.awt.*;
 import java.io.Serializable;
 
 public class Bullet extends coordinatedObject implements hasRange, hasCoordinates {
+
+    public String shooter;
     double damage;
     public BulletMover bulletMover;
     public JLabel bulletLabel;
     public Container container;
 
     public Bullet(int x, int y, double damage){
+        this.shooter = ListOfUsers.selectedUser;
         this.setX(x);
         this.setY(y);
         this.damage = damage;

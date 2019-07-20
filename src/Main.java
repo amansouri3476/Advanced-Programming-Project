@@ -31,6 +31,10 @@ public class Main {
             3. Different Players Spaceships should be displayed on different screens (needs to send their location.)
             4. engine heat of each player should be displayed properly according to the number of bullets it has shot.
             5. Checking whether or not more than one client is able to join the game, both as an spectator or a player.
+            6. Some powerups don't fall correctly. Their functioning needs to be debugged. Also there are too many
+                powerups falling and needs to be decreased
+            7. Every bullet and bomb should have an ID to indicate its shooter and enables scoring.
+            8. Client's shooting seems to have some problems. Reconsideration required.
          */
     }
 }

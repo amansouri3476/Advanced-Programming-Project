@@ -172,8 +172,8 @@ public class GameClient implements Runnable {
     }
 
     private void decodeMessage(NetworkMessage serverUpdateMessage) {
-        System.out.println(">>>>>>>>> Number of bullets before receiving from the server: " + ListOfBullets.Bullets.size());
-        System.out.println(">>>>>>>>> Number of bullets sent from the server: " + serverUpdateMessage.Bullets.size());
+//        System.out.println(">>>>>>>>> Number of bullets before receiving from the server: " + ListOfBullets.Bullets.size());
+//        System.out.println(">>>>>>>>> Number of bullets sent from the server: " + serverUpdateMessage.Bullets.size());
 //        System.out.println(serverUpdateMessage.a);
 //        ClientGameEventHandler.spaceship.x_coordinate = serverUpdateMessage.spaceship_x;
 //        ClientGameEventHandler.spaceship.y_coordinate = serverUpdateMessage.spaceship_y;
@@ -185,6 +185,8 @@ public class GameClient implements Runnable {
         ListOfFirings.Firings = serverUpdateMessage.Firings;
         ListOfGiants.Giants = serverUpdateMessage.Giants;
         ListOfPowerups.Powerups = serverUpdateMessage.Powerups;
+
+//        ListOfUsers.getPlayerObjByUsername(ListOfUsers.selectedUser).score = (int) serverUpdateMessage.scoreDict.get(ListOfUsers.selectedUser);
 //        if (counter == 100){
 //            System.out.println("Enemy 0 x coordinate: " + serverUpdateMessage.Enemies.get(0).x_coordinate);
 //            System.out.println("Number of Bullets: " + serverUpdateMessage.Bullets.size());

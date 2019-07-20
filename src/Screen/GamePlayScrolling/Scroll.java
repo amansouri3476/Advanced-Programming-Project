@@ -2,6 +2,7 @@ package Screen.GamePlayScrolling;
 
 import GameObjects.*;
 import Lists.*;
+import Menu.Scorer;
 
 import java.awt.Canvas;
 import java.awt.Graphics;
@@ -39,6 +40,8 @@ public class Scroll extends Canvas implements MouseMotionListener, MouseListener
     public static int safeZoneDisplayTimer=0;
     public boolean firstTime = true;
     public boolean firstTimeP = true;
+
+    public static int score = 0;
     /////////////////////////////////////
     // Two copies of the background image to scroll
     private Background backOne;
@@ -359,6 +362,7 @@ public class Scroll extends Canvas implements MouseMotionListener, MouseListener
                                 Enemy enemy = ListOfEnemies.Enemies.get(j);
                                 enemyCounter.getAndIncrement();
                                 if (enemy.checkCollision(bullet)){
+                                    Scorer.enemyScore(enemy, bullet);
                                     ListOfExplosions.updateList();
                                     ListOfBullets.Bullets.remove(bullet);
                                 }

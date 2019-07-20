@@ -20,23 +20,19 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class GameServer implements Runnable {
 
-    public JButton bStartGame;
+    private JButton bStartGame;
     public Container container;
-    public JTextArea messages;
+    private JTextArea messages;
 
-    private int width = 200;
-    private int height = 50;
-    private int x = 650;
-    private int y = 200;
-    private int delta_y = 100;
-    private int radius = 10;
-
+    public boolean isMultiplayer = false;
     public static ArrayList<String> joinedPlayers = new ArrayList<>();
     private static NetworkMessage networkMessage = new NetworkMessage();
     private static int counter = 1;
 
     public GameServer(Container contentPane, JFrame frame, String port_number, String player_number, String level_number) {
 
+
+        isMultiplayer = true;
         // Transparent 16 x 16 pixel cursor image.
         this.container = contentPane;
         GameServer.joinedPlayers.add(ListOfUsers.selectedUser);
@@ -49,6 +45,12 @@ public class GameServer implements Runnable {
                 cursorImg, new Point(0, 0), "blank cursor");
 
 
+        int width = 200;
+        int height = 50;
+        int x = 650;
+        int y = 200;
+        int delta_y = 100;
+        int radius = 10;
         JButton bStartGame = addButton("Start Game!", x - 300, y + delta_y * 4 + 100, width, height, radius);
         this.bStartGame = bStartGame;
 
@@ -56,7 +58,7 @@ public class GameServer implements Runnable {
         messages.setForeground(Color.RED);
         messages.setBackground(Color.orange);
         messages.setFont(new Font("Georgia", Font.ITALIC, 36));
-        messages.setBounds(x - 100, y - 100,2 * width,height * 10);
+        messages.setBounds(x - 100, y - 100,2 * width, height * 10);
         messages.setEditable(false);
         container.add(messages);
 
@@ -185,7 +187,7 @@ public class GameServer implements Runnable {
 //        container.setVisible(true);
     }
     private void decodeMessage(NetworkMessage serverUpdateMessage) {
-        System.out.println(">>>>>>>>> Number of bullets before receiving from the client: " + ListOfBullets.Bullets.size());
+//        System.out.println(">>>>>>>>> Number of bullets before receiving from the client: " + ListOfBullets.Bullets.size());
 //        System.out.println(">>>>>>>>> Number of bullets before sent from the client: " + serverUpdateMessage.Bullets.size());
 //        System.out.println(serverUpdateMessage.Enemies.size());
 //        System.out.println(serverUpdateMessage.Enemies.get(0).x_coordinate);
