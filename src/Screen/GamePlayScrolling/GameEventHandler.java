@@ -4,7 +4,6 @@ import GameObjects.Gun;
 import GameObjects.Spaceship;
 import MovingBackground.ScrollingBackground;
 import MovingBackground.ScrollingBackground;
-import Screen.GamePlayScrolling.Runner;
 import Screen.GamePlayScrolling.Scroll;
 import Screen.ScreenPainter;
 
@@ -39,12 +38,14 @@ public class GameEventHandler extends JFrame implements Runnable {
 
 
         this.spaceship = new Spaceship(getContentPane(), spaceshipLabel);
+        this.spaceship.setX(750);
+        this.spaceship.setY(1200);
 
         container.setCursor(blankCursor);
 
         Scroll scroll = null;
         try {
-            scroll = new Scroll();
+            scroll = new Scroll(this);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -58,6 +59,7 @@ public class GameEventHandler extends JFrame implements Runnable {
         container.repaint();
 
         container.setVisible(true);
+
     }
 
     public void run() {
@@ -92,7 +94,7 @@ public class GameEventHandler extends JFrame implements Runnable {
 
         Scroll scroll = null;
         try {
-            scroll = new Scroll();
+            scroll = new Scroll(this);
         } catch (IOException e) {
             e.printStackTrace();
         }

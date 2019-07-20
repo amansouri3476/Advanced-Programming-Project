@@ -38,6 +38,8 @@ public class Main {
             9. In the network-message, each player only requires other's position and color (perhaps its remaining lives)
             10. According to latter, network-message requires a field containing the list of all players or a dictionary
                 with required values with respect to keys (which are the names of those who have joined the game)
+            11. Spaceship moving is completely the same as chicken invaders. It is not implemented using e.getX() and
+                e.getY() anymore so enabling the player to move between tabs without experiencing any glitches meanwhile.
          */
     }
 }

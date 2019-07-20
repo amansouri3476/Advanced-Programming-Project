@@ -4,7 +4,6 @@ import GameObjects.Gun;
 import GameObjects.Spaceship;
 import MovingBackground.ScrollingBackground;
 import MovingBackground.ScrollingBackground;
-import Screen.GamePlayScrolling.Runner;
 import Screen.GamePlayScrolling.Scroll;
 import Screen.ScreenPainter;
 

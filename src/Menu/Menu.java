@@ -5,6 +5,7 @@ import MovingBackground.ScrollingBackground;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.lang.reflect.Array;
 
 abstract public class Menu extends JFrame {
     JFrame frame;
@@ -23,6 +24,7 @@ abstract public class Menu extends JFrame {
 //            e.printStackTrace();
 //
 //        }
+
 
         ScrollingBackground back = new ScrollingBackground();
         ((Component)back).setFocusable(true);

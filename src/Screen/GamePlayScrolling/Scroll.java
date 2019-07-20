@@ -4,9 +4,7 @@ import GameObjects.*;
 import Lists.*;
 import Menu.Scorer;
 
-import java.awt.Canvas;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -24,12 +22,19 @@ public class Scroll extends Canvas implements MouseMotionListener, MouseListener
     public static boolean isDragged;
     public static boolean isPressed;
     public static boolean isPaused = false;
+    public static boolean screenInactive = false;
+    public static boolean firstTimeMouseX = false;
+    public static boolean firstTimeMouseY = false;
+    public static boolean changePermittedX = true;
+    public static boolean changePermittedY = true;
+    public static boolean changePositionX = true;
+    public static boolean changePositionY = true;
     public static int mouseCoordinateChangeX=0;
     public static int mouseCoordinateChangeY=0;
-    public static int nextPosX;
-    public static int nextPosY;
-    public static int currentPosX;
-    public static int currentPosY;
+    public static int nextPosX=0;
+    public static int nextPosY=0;
+    public static int currentPosX=0;
+    public static int currentPosY=0;
     public static boolean isOverheated = false;
     public static int overheatTimer = 0;
     public static int waveTimer;
@@ -40,6 +45,8 @@ public class Scroll extends Canvas implements MouseMotionListener, MouseListener
     public static int safeZoneDisplayTimer=0;
     public boolean firstTime = true;
     public boolean firstTimeP = true;
+    private Robot robot;
+    private int refresh = 0;
 
     public static int score = 0;
     /////////////////////////////////////
@@ -48,6 +55,9 @@ public class Scroll extends Canvas implements MouseMotionListener, MouseListener
     private Background backTwo;
 
     private BufferedImage back;
+
+    // GameEventHandler for checking whether it is active or not
+    private GameEventHandler gameEventHandler;
 
     public Scroll() throws IOException {
         backOne = new Background();
@@ -60,6 +70,34 @@ public class Scroll extends Canvas implements MouseMotionListener, MouseListener
         new Thread(this).start();
         setVisible(true);
 
+    }
+
+    public Scroll(GameEventHandler gameEventHandler) throws IOException {
+        backOne = new Background();
+        backTwo = new Background(backOne.getImageWidth(), 0);
+
+        addMouseMotionListener(this);
+        addMouseListener(this);
+        addKeyListener(this);
+
+        this.gameEventHandler = gameEventHandler;
+
+        new Thread(this).start();
+        setVisible(true);
+
+        spaceship.setX(700);
+        spaceship.setY(650);
+
+        ///////// For adjusting the mouse position
+        GraphicsEnvironment ge =
+                GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice[] gs = ge.getScreenDevices();
+
+        try {
+            robot = new Robot(gs[0]);
+        } catch (AWTException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -93,7 +131,8 @@ public class Scroll extends Canvas implements MouseMotionListener, MouseListener
                             BombList.updateList();
                             ListOfGiants.updateList();
                             /////////////////////////// Moving ///////////////////////////
-
+                            spaceshipMove();
+                            mouseCheck();
                             /////////////////////// Spaceship ///////////////////////
 
                             /////////////////////// Bullets ///////////////////////
@@ -121,6 +160,14 @@ public class Scroll extends Canvas implements MouseMotionListener, MouseListener
                             /////////////////////////// Next Step ///////////////////////////
                             try {
                                 Thread.sleep(timeStep);
+                                if (refresh == 10){
+                                    System.out.println(">>>> Spaceship: " + spaceship.getX() + "\t" + mouseCoordinateChangeX);
+                                    System.out.println(">>>>>>>> Event: " + event_x + "\t" + event_y);
+                                    refresh = 0;
+                                    changePermittedX = true;
+                                    changePermittedY = true;
+                                }
+                                else refresh++;
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
@@ -136,6 +183,40 @@ public class Scroll extends Canvas implements MouseMotionListener, MouseListener
         }
         catch (Exception e) {}
     }
+
+    private void mouseCheck() {
+        if (!gameEventHandler.isActive()){
+            firstTimeMouseX = false;
+            firstTimeMouseY = false;
+            changePermittedX = true;
+            changePermittedY = true;
+            screenInactive = true;
+        }
+    }
+
+    private void spaceshipMove() {
+        if (changePositionX){
+            spaceship.setX(spaceship.getX() + mouseCoordinateChangeX);
+            if (spaceship.x_coordinate > 1420){
+                spaceship.setX(1420);
+            }
+            else if (spaceship.x_coordinate < 0){
+                spaceship.setX(0);
+            }
+            changePositionX = false;
+        }
+        if (changePositionY){
+            spaceship.setY(spaceship.getY() + mouseCoordinateChangeY);
+            if (spaceship.y_coordinate < 0){
+                spaceship.setY(0);
+            }
+            else if (spaceship.y_coordinate > 700){
+                spaceship.setY(700);
+            }
+            changePositionY = false;
+        }
+    }
+
 
     private void giantsMovingandShoot() {
         if (!ListOfGiants.Giants.isEmpty()){
@@ -419,30 +500,54 @@ public class Scroll extends Canvas implements MouseMotionListener, MouseListener
     void eventOutput(String eventDescription, MouseEvent e) {
         int xOffset = 55;
         int yOffset = 20;
+
+
         if (eventDescription.equals("Mouse moved")){
-//            System.out.println("Mouse moved");
-            event_x = e.getX();
-            event_y = e.getY();
-            GameEventHandler.spaceship.setX(event_x - xOffset);
-            GameEventHandler.spaceship.setY(event_y - yOffset);
+            smoothMoving(e);
+//            GameEventHandler.spaceship.setX(event_x - xOffset);
+//            GameEventHandler.spaceship.setY(event_y - yOffset);
+
+//            GameEventHandler.spaceship.setX(100);
+//            GameEventHandler.spaceship.setY(200);
+//            if (screenInactive){
+//                currentPosY = nextPosX;
+//                currentPosY = nextPosY;
+//            }
+//            else {
+//                Scroll.nextPosX = event_x - xOffset;
+//                Scroll.nextPosY = event_y - yOffset;
+//
+//                mouseCoordinateChangeX = nextPosX - currentPosX;
+//                mouseCoordinateChangeY = nextPosY - currentPosY;
+//
+//                if (changePermittedX){
+//                    GameEventHandler.spaceship.setX(spaceship.x_coordinate + mouseCoordinateChangeX);
+//                    GameEventHandler.spaceship.setY(spaceship.y_coordinate + mouseCoordinateChangeY);
+//                }
+//
+//                currentPosX = nextPosX;
+//                currentPosY = nextPosY;
+//            }
+
         }
         if (eventDescription.equals("Mouse dragged")){
             System.out.println("Mouse dragged");
 //            if (e.getButton() == MouseEvent.BUTTON3){
 //                Gun.bombShoot(e.getX(), e.getY(), getAccessibleContext()));
 //            }
-            event_x = e.getX();
-            event_y = e.getY();
-            GameEventHandler.spaceship.setX(event_x - xOffset);
-            GameEventHandler.spaceship.setY(event_y - yOffset);
+            smoothMoving(e);
+//            event_x = e.getX();
+//            event_y = e.getY();
+//            GameEventHandler.spaceship.setX(event_x - xOffset);
+//            GameEventHandler.spaceship.setY(event_y - yOffset);
             if (e.getButton() == MouseEvent.BUTTON3 && !spaceship.isExploded){
-                Gun.bombShoot(event_x, event_y);
+                Gun.bombShoot(spaceship.getX(), spaceship.getY());
             }
             if (e.getButton() == MouseEvent.BUTTON1){
                 isPressed = false;
                 isDragged = true;
                 if (!spaceship.isExploded){
-                    Gun.longShotD(event_x, event_y, Gun.damage);
+                    Gun.longShotD(spaceship.getX(), spaceship.getY(), Gun.damage);
                 }
             }
         }
@@ -456,10 +561,10 @@ public class Scroll extends Canvas implements MouseMotionListener, MouseListener
 //            }
             event_x = e.getX();
             event_y = e.getY();
-            GameEventHandler.spaceship.setX(event_x - xOffset);
-            GameEventHandler.spaceship.setY(event_y - yOffset);
+//            GameEventHandler.spaceship.setX(event_x - xOffset);
+//            GameEventHandler.spaceship.setY(event_y - yOffset);
             if (e.getButton() == MouseEvent.BUTTON3 && !spaceship.isExploded){
-                Gun.bombShoot(event_x, event_y);
+                Gun.bombShoot(spaceship.getX(), spaceship.getY());
             }
             if (e.getButton() == MouseEvent.BUTTON1){
                 isDragged = false;
@@ -480,7 +585,7 @@ public class Scroll extends Canvas implements MouseMotionListener, MouseListener
                                 firstTime = false;
                                 System.out.println("Press Accomplished");
                                 if (!spaceship.isExploded){
-                                        Gun.longShotP(event_x, event_y, Gun.damage);
+                                        Gun.longShotP(spaceship.getX(), spaceship.getY(), Gun.damage);
                                 }
                             }
                         }
@@ -506,6 +611,103 @@ public class Scroll extends Canvas implements MouseMotionListener, MouseListener
 //                + " (" + e.getX() + "," + e.getY() + ")"
 //                + " detected on "
 //                + e.getComponent().getClass().getName());
+    }
+
+    private void smoothMoving(MouseEvent e) {
+        System.out.println(">>>>>>>>>>>>>>>>> SmoothMoving called");
+        if (screenInactive){
+            System.out.println("Mouse moved after Inactive");
+            event_x = e.getX();
+            event_y = e.getY();
+
+            nextPosX = event_x;
+            currentPosX = nextPosX;
+
+            nextPosY = event_y;
+            currentPosY = nextPosY;
+
+            screenInactive = false;
+        }
+        else {
+            event_x = e.getX();
+            event_y = e.getY();
+        }
+
+
+//            System.out.println(event_x + "\t" + event_y);
+        ////////// X //////////
+        if (currentPosX == nextPosX){
+            if (!firstTimeMouseX){
+                nextPosX = event_x;
+                currentPosX = nextPosX;
+                firstTimeMouseX = true;
+            }
+            else {
+                nextPosX = event_x;
+                mouseCoordinateChangeX = nextPosX - currentPosX;
+                changePositionX = true;
+//                spaceship.setX(spaceship.getX() + mouseCoordinateChangeX);
+                currentPosX = nextPosX;
+            }
+        }
+        else currentPosX = nextPosX;
+
+        ////////// Y //////////
+        if (currentPosY == nextPosY){
+            if (!firstTimeMouseY){
+                nextPosY = event_y;
+                currentPosY = nextPosY;
+                firstTimeMouseY = true;
+            }
+            else {
+                nextPosY = event_y;
+                mouseCoordinateChangeY = nextPosY - currentPosY;
+                changePositionY = true;
+//                spaceship.setY(spaceship.getY() + mouseCoordinateChangeY);
+                currentPosY = nextPosY;
+            }
+        }
+        else currentPosY = nextPosY;
+
+        /////////// Mouse Change XXX ///////////
+        if (event_x > 1450 || event_x < 20){
+            if (changePermittedX){
+                changePermittedX = false;
+                System.out.println(">>>>>>>>>>>>>>>>> Mouse Change XXX");
+                if (event_x > 1400) {
+                    robot.mouseMove(1100, event_y);
+                }
+                else robot.mouseMove(300, event_y);
+//                nextPosX = 750;
+//                currentPosX = 750;
+
+//                nextPosY = event_y;
+//                currentPosY = nextPosY;
+
+                firstTimeMouseX = false;
+                firstTimeMouseY = false;
+            }
+        }
+
+        /////////// Mouse Change YYY ///////////
+        if (event_y > 730 || event_y < 20){
+            if (changePermittedY){
+                changePermittedY = false;
+                System.out.println(">>>>>>>>>>>>>>>>> Mouse Change YYY");
+                if (event_y > 730) {
+                    robot.mouseMove(event_x, 650);
+                }
+                else robot.mouseMove(event_x, 200);
+//                nextPosX = 750;
+//                currentPosX = 750;
+
+//                nextPosY = event_y;
+//                currentPosY = nextPosY;
+
+                firstTimeMouseX = false;
+                firstTimeMouseY = false;
+            }
+        }
     }
 
     public void mouseMoved(MouseEvent e) {
@@ -586,17 +788,17 @@ public class Scroll extends Canvas implements MouseMotionListener, MouseListener
         //////////////////////////// Level 1 ////////////////////////////
         if (waveIdx == 1 && levelIdx == 1){
             waveIndexDraw = true;
-            new EnemyGroup("Rectangular", 500, 100,"zigzag",  50);
+//            new EnemyGroup("Rectangular", 500, 100,"zigzag",  50);
 //            new EnemyGroup("Circular", "Fixed", 500, -50, 55);
 //            new EnemyGroup("Rotational", 750, 400, 150, 60);
 //            new Giant("starDestroyer", levelIdx * 250, 200, 100);
         }
         if (waveIdx == 2 && levelIdx == 1){
-            new EnemyGroup("Circular", "Fixed", 500, -50, 55);
+//            new EnemyGroup("Circular", "Fixed", 500, -50, 55);
         }
         if (waveIdx == 3 && levelIdx == 1){
 //            new Enemy(500, -100, "fighter");
-            new EnemyGroup("Rotational", 750, 400, 150, 60);
+//            new EnemyGroup("Rotational", 750, 400, 150, 60);
         }
         if (waveIdx == 4 && levelIdx == 1){
 //            new Enemy(500, -100, "fighter");
