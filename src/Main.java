@@ -35,6 +35,9 @@ public class Main {
                 powerups falling and needs to be decreased
             7. Every bullet and bomb should have an ID to indicate its shooter and enables scoring.
             8. Client's shooting seems to have some problems. Reconsideration required.
+            9. In the network-message, each player only requires other's position and color (perhaps its remaining lives)
+            10. According to latter, network-message requires a field containing the list of all players or a dictionary
+                with required values with respect to keys (which are the names of those who have joined the game)
          */
     }
 }

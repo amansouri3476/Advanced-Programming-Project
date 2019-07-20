@@ -17,6 +17,8 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class GameServer implements Runnable {
 
@@ -28,6 +30,7 @@ public class GameServer implements Runnable {
     public static ArrayList<String> joinedPlayers = new ArrayList<>();
     private static NetworkMessage networkMessage = new NetworkMessage();
     private static int counter = 1;
+    private int numberOfPlayers;
 
     public GameServer(Container contentPane, JFrame frame, String port_number, String player_number, String level_number) {
 
@@ -37,6 +40,7 @@ public class GameServer implements Runnable {
         this.container = contentPane;
         GameServer.joinedPlayers.add(ListOfUsers.selectedUser);
         container.removeAll();
+        this.numberOfPlayers = Integer.valueOf(player_number);
 
         BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
 
@@ -106,9 +110,10 @@ public class GameServer implements Runnable {
 
     @Override
     public void run() {
+        /////////////////////////////////////
+        System.out.println("Server Started");
 
-        System.out.println("Sender Start");
-
+        ExecutorService executor = Executors.newFixedThreadPool(numberOfPlayers);//creating a pool of threads
 
         Thread thread = new Thread(() -> {
             try {
@@ -117,49 +122,15 @@ public class GameServer implements Runnable {
                 int port = 10005;
                 ssChannel.socket().bind(new InetSocketAddress(port));
 
-                System.out.println("listening to Client");
-                SocketChannel sChannel = ssChannel.accept();
-                System.out.println("Client connected");
-                final ObjectOutputStream oos = new
-                        ObjectOutputStream(sChannel.socket().getOutputStream());
-                oos.flush();
-                final ObjectInputStream ois =
-                        new ObjectInputStream(sChannel.socket().getInputStream());
-
-                ////////////////// Sending Messages to clients //////////////////
-                Thread senderThread = new Thread(() -> {
-                    while (true){
-//                        System.out.println(">>>>>>>>>>>>>>Server");
-                        try {
-                            NetworkMessage message = new NetworkMessage();
-                            checkStatus(message);
-                            oos.writeUnshared(message);
-                            oos.reset();
-                            oos.flush();
-
-                            ////////////////
-                            NetworkMessage serverUpdateMessage = (NetworkMessage) ois.readUnshared();
-                            decodeMessage(serverUpdateMessage);
-                            ///////////////
-                            Thread.sleep(2);
-                        } catch (IOException | ClassNotFoundException | InterruptedException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-                });
-                senderThread.start();
-
+                while (true) { // this while should be limited to the number of players being connected.
+                    executor.execute(new ClientHandlerThread(ssChannel.accept()));
+                }
 
             } catch (IOException e) {
                 e.printStackTrace();
             }
-//            oos.close();
-
-
         });
         thread.start();
-
     }
 
     private void checkStatus(NetworkMessage networkMessage) {

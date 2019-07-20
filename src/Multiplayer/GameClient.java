@@ -71,17 +71,21 @@ public class GameClient implements Runnable {
         container.setVisible(true);
 
         bSpectator.addActionListener(e -> {
+            // This has to be first because of the first time shake-hand
+            run();
+
             Thread thread1 = new Thread(() -> {
 //                container.setVisible(false);
                 ClientGameEventHandler clientGameEventHandler = new ClientGameEventHandler(true, container);
                 clientGameEventHandler.run();
             });
             thread1.start(); /// preventing message passing from being blocked by the beginning of this thread.
-
-            run();
         });
 
         bPlayer.addActionListener(e -> {
+            // This has to be first because of the first time shake-hand
+            run();
+
             Thread thread = new Thread(() -> {
 //                container.setVisible(false);
                 ClientGameEventHandler clientGameEventHandler = new ClientGameEventHandler(false, container);
@@ -89,7 +93,6 @@ public class GameClient implements Runnable {
             });
             thread.start(); /// preventing message passing from being blocked by the beginning of this thread.
 
-            run();
         });
 
     }
@@ -124,6 +127,10 @@ public class GameClient implements Runnable {
                     final ObjectInputStream ois =
                             new ObjectInputStream(sChannel.socket().getInputStream());
 
+                    ////////////////// Shaking Hands //////////////////
+                    oos.writeUnshared(ListOfUsers.selectedUser);
+                    oos.reset();
+                    oos.flush();
 
                      ////////////////// Receiving Messages from the Server //////////////////
                         Thread receiverThread = new Thread(() -> {
@@ -136,22 +143,18 @@ public class GameClient implements Runnable {
                                     decodeMessage(serverUpdateMessage);
 
                                     Thread.sleep(2);
-                                    //////////////
-                                    NetworkMessage message = new NetworkMessage(ListOfBullets.clientBullets, BombList.clientBombs);
-                                    checkStatus(message);
-                                    oos.writeUnshared(message);
-                                    oos.reset();
-                                    oos.flush();
-                                    refreshClientLists();
+                                    ////////////// Only non-spectators are permitted to send messages.
+                                    if (!ClientGameEventHandler.isSpectator){
+                                        NetworkMessage message = new NetworkMessage(ListOfBullets.clientBullets, BombList.clientBombs);
+                                        checkStatus(message);
+                                        oos.writeUnshared(message);
+                                        oos.reset();
+                                        oos.flush();
+                                        refreshClientLists();
+                                    }
                                 } catch (IOException | ClassNotFoundException | InterruptedException e) {
                                     e.printStackTrace();
                                 }
-
-//                                try {
-//                                    Thread.sleep(5);
-//                                } catch (InterruptedException e) {
-//                                    e.printStackTrace();
-//                                }
                             }
                         });
                         receiverThread.start();

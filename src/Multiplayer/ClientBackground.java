@@ -4,6 +4,7 @@ import GameObjects.Giant;
 import Lists.*;
 import Multiplayer.ClientGameEventHandler;
 import Multiplayer.ClientScroll;
+import Screen.GamePlayScrolling.GameEventHandler;
 import Screen.GamePlayScrolling.ImageLoader;
 
 import java.awt.*;
@@ -153,7 +154,7 @@ public class ClientBackground {
         Graphics2D g = (Graphics2D) window;
         g.setFont(new Font("Georgia", Font.ITALIC, 42));
         g.setColor(Color.ORANGE);
-        g.drawString(String.valueOf(ListOfUsers.getPlayerObjByUsername(ListOfUsers.selectedUser).score), 20, 100);
+        g.drawString(ListOfUsers.selectedUser + ": " + ListOfUsers.getPlayerObjByUsername(ListOfUsers.selectedUser).score, 20, 100);
         ///////////////////////////////////////////////////
 
 //        BufferedImage i = ImageIO.read(new File("C:\\Users\\Amin\\IdeaProjects\\ChickenInvaders\\src\\GameAssets\\star_wars_logo_PNG36.png"));
@@ -161,6 +162,11 @@ public class ClientBackground {
 //        g.drawImage(death_star, null, 1000, 250);
         if (!ClientGameEventHandler.spaceship.isExploded){
             g.drawImage(destroyer, null, ClientGameEventHandler.spaceship.x_coordinate, ClientGameEventHandler.spaceship.y_coordinate);
+
+            // Displaying player's Name
+            g.setFont(new Font("Georgia", Font.ITALIC, 32));
+            g.setColor(Color.GREEN);
+            g.drawString(ListOfUsers.selectedUser, ClientGameEventHandler.spaceship.x_coordinate + 20, ClientGameEventHandler.spaceship.y_coordinate + 100);
         }
         else {
             g.drawImage(destroyer_respawn, null, ClientGameEventHandler.spaceship.x_coordinate, ClientGameEventHandler.spaceship.y_coordinate);
