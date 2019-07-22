@@ -121,11 +121,6 @@ public class ClientBackground {
 
         // Draw the image onto the Graphics reference
         window.drawImage(image, getX(), getY(), image.getWidth(), image.getHeight(), null);
-        window.setColor(Color.BLUE);
-        window.fillRoundRect(10, 10, 500, 50, 50, 50);
-        window.setColor(Color.getHSBColor(0, 0.2f + 0.6f * (ListOfBullets.heat)/100, 0.5f));
-        window.fillRoundRect(10, 10, (int) (ListOfBullets.heat * 5), 50, 50, 50);
-
         //////////// Moving Background ////////////
 
 //         Move the x position left for next time
@@ -149,32 +144,69 @@ public class ClientBackground {
         }
 
         //////////// Moving Background Finished ////////////
-
-        //////////// Displaying player's score ////////////
         Graphics2D g = (Graphics2D) window;
-        g.setFont(new Font("Georgia", Font.ITALIC, 42));
-        g.setColor(Color.ORANGE);
-        g.drawString(ListOfUsers.selectedUser + ": " + ListOfUsers.getPlayerObjByUsername(ListOfUsers.selectedUser).score, 20, 100);
+
+
         ///////////////////////////////////////////////////
 
 //        BufferedImage i = ImageIO.read(new File("C:\\Users\\Amin\\IdeaProjects\\ChickenInvaders\\src\\GameAssets\\star_wars_logo_PNG36.png"));
 //        g.drawImage(logo, null, 20, 300);
 //        g.drawImage(death_star, null, 1000, 250);
-        if (!ClientGameEventHandler.spaceship.isExploded){
-            g.drawImage(destroyer, null, ClientGameEventHandler.spaceship.x_coordinate, ClientGameEventHandler.spaceship.y_coordinate);
 
-            // Displaying player's Name
-            g.setFont(new Font("Georgia", Font.ITALIC, 32));
-            g.setColor(Color.GREEN);
-            g.drawString(ListOfUsers.selectedUser, ClientGameEventHandler.spaceship.x_coordinate + 20, ClientGameEventHandler.spaceship.y_coordinate + 100);
+        //////////////// This Client's Spaceship and Details ////////////////
+        if (!ClientGameEventHandler.isSpectator){
+
+            //////////// Displaying player's engine ////////////
+            window.setColor(Color.BLUE);
+            window.fillRoundRect(10, 10, 500, 50, 50, 50);
+            window.setColor(Color.getHSBColor(0, 0.2f + 0.6f * (ListOfClientBullets.heat)/100, 0.5f));
+            window.fillRoundRect(10, 10, (int) (ListOfClientBullets.heat * 5), 50, 50, 50);
+
+            //////////// Displaying player's score ////////////
+            g.setFont(new Font("Georgia", Font.ITALIC, 42));
+            g.setColor(Color.ORANGE);
+//            g.drawString(ListOfUsers.selectedUser + ": " + ListOfUsers.getPlayerObjByUsername(ListOfUsers.selectedUser).score, 20, 100);
+            //TODO: If a client leaves the game, there are multiple things to be reconsidered.
+            g.drawString(ListOfUsers.selectedUser + ": " + ClientScroll.score, 20, 100);
+
+            if (!ClientGameEventHandler.spaceship.isExploded){
+                g.drawImage(destroyer, null, ClientGameEventHandler.spaceship.x_coordinate, ClientGameEventHandler.spaceship.y_coordinate);
+
+                // Displaying player's Name
+                g.setFont(new Font("Georgia", Font.ITALIC, 32));
+                g.setColor(Color.ORANGE);
+                g.drawString(ListOfUsers.selectedUser, ClientGameEventHandler.spaceship.x_coordinate + 20, ClientGameEventHandler.spaceship.y_coordinate + 100);
+            }
+            else {
+                g.drawImage(destroyer_respawn, null, ClientGameEventHandler.spaceship.x_coordinate, ClientGameEventHandler.spaceship.y_coordinate);
+            }
+            g.drawImage(engineBackground, null, 10, 700);
+            g.drawImage(heart, null, 25, 725);
+            g.drawImage(rocket_small, null, 95, 725);
+            g.drawImage(tieSmall, null, 205, 720);
         }
-        else {
-            g.drawImage(destroyer_respawn, null, ClientGameEventHandler.spaceship.x_coordinate, ClientGameEventHandler.spaceship.y_coordinate);
+        //////////////// Other Players' Spaceships ////////////////
+        for (Player player: GameClient.joinedPlayersObjects){
+            if (player.getUserName().equals(ListOfUsers.selectedUser)){
+                // So as not to draw client's spaceship twice
+            }
+            else {
+                if (!player.isExploded && !player.isSpectator){
+                    g.drawImage(destroyer, null, player.x_coordinate, player.y_coordinate);
+
+                    // Displaying player's Name
+                    g.setFont(new Font("Georgia", Font.ITALIC, 32));
+                    g.setColor(Color.GREEN);
+                    g.drawString(player.getUserName(), player.x_coordinate + 20, player.y_coordinate + 100);
+                }
+                else if (!player.isSpectator){
+                    g.drawImage(destroyer_respawn, null, player.x_coordinate, player.y_coordinate);
+                    g.setFont(new Font("Georgia", Font.ITALIC, 32));
+                    g.setColor(Color.GREEN);
+                    g.drawString(player.getUserName(), player.x_coordinate + 20, player.y_coordinate + 100);
+                }
+            }
         }
-        g.drawImage(engineBackground, null, 10, 700);
-        g.drawImage(heart, null, 25, 725);
-        g.drawImage(rocket_small, null, 95, 725);
-        g.drawImage(tieSmall, null, 205, 720);
 
 
         if (showSafeZone){

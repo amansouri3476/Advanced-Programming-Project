@@ -17,6 +17,10 @@ public class BombList {
             for (Bomb bomb : Bombs) {
                 ////// Explosion Check (Bomb reached center) //////
                 if (bomb.bombMover.reached_x && bomb.bombMover.reached_y){
+
+                    /*TODO: When the bomb explodes, if there's a giant present, some amount
+                        of its health needs to be reduced
+                    */
                     for (Enemy enemy: ListOfEnemies.Enemies){
                         enemy.isDead = true;
                         Scorer.bombScore(bomb);

@@ -22,6 +22,7 @@ public class Main {
         Saver saver = new Saver("C:\\Users\\Amin\\IdeaProjects\\StarWars\\src" + player.getUserName(), player);
         Loader loader = new Loader("C:\\Users\\Amin\\IdeaProjects\\StarWars\\src" + player.getUserName());
         Player player1 = new Player("Erfan");
+        Player player2 = new Player("Ehsan");
         LoopSound loopSound = new LoopSound("src/imperial_march.wav", true);
 //       loopSound.clip.stop();
 
@@ -40,6 +41,7 @@ public class Main {
                 with required values with respect to keys (which are the names of those who have joined the game)
             11. Spaceship moving is completely the same as chicken invaders. It is not implemented using e.getX() and
                 e.getY() anymore so enabling the player to move between tabs without experiencing any glitches meanwhile.
+            12. Later on, spectators need to be able to join the game when a new wave or level is initiated.
          */
     }
 }

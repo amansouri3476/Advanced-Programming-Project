@@ -60,7 +60,7 @@ public class Enemy extends coordinatedObject implements hasRange, hasCoordinates
         return false;
     }
     public boolean checkCollisionSpaceship(Spaceship object){
-        if (this.getX() - rangeX < object.getX() && object.getX() < this.getX() + rangeX && this.getY() - rangeY < object.getY() && object.getY() < this.getY() + rangeY){
+        if (this.getX() < object.getX() + object.rangeX && object.getX() < this.getX() && this.getY() < object.getY() + object.rangeY && object.getY() < this.getY()){
             return true;
         }
         return false;
@@ -76,7 +76,7 @@ public class Enemy extends coordinatedObject implements hasRange, hasCoordinates
     public void death() {
         LoopSound loopSound = new LoopSound("C:\\Users\\Amin\\IdeaProjects\\StarWars\\src\\GameAssets\\Depth_Charge_Short.wav", false);
         double random = Math.random();
-        if (random < 0.6) {
+        if (random < 0.5) {
             new Powerup(this.x_coordinate, this.y_coordinate);
         }
     }

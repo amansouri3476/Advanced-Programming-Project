@@ -45,7 +45,7 @@ public class ClientGameEventHandler extends JFrame implements Runnable {
 
         ClientScroll clientScroll = null;
         try {
-            clientScroll = new ClientScroll();
+            clientScroll = new ClientScroll(this);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -96,7 +96,7 @@ public class ClientGameEventHandler extends JFrame implements Runnable {
 
         ClientScroll clientScroll = null;
         try {
-            clientScroll = new ClientScroll();
+            clientScroll = new ClientScroll(this);
         } catch (IOException e) {
             e.printStackTrace();
         }

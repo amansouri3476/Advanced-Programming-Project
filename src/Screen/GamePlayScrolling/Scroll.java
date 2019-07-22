@@ -3,11 +3,13 @@ package Screen.GamePlayScrolling;
 import GameObjects.*;
 import Lists.*;
 import Menu.Scorer;
+import Multiplayer.GameServer;
 
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static Screen.GamePlayScrolling.GameEventHandler.*;
@@ -134,7 +136,10 @@ public class Scroll extends Canvas implements MouseMotionListener, MouseListener
                             spaceshipMove();
                             mouseCheck();
                             /////////////////////// Spaceship ///////////////////////
-
+                            // Checking collision of other spaceships' bullets with each client.
+//                            if (GameServer.isMultiplayer){
+//                                interClientHitCheck();
+//                            }
                             /////////////////////// Bullets ///////////////////////
                             bulletsMoveAndCollisionCheck();
                             /////////////////////// Enemies and Giants ///////////////////////
@@ -161,8 +166,8 @@ public class Scroll extends Canvas implements MouseMotionListener, MouseListener
                             try {
                                 Thread.sleep(timeStep);
                                 if (refresh == 10){
-                                    System.out.println(">>>> Spaceship: " + spaceship.getX() + "\t" + mouseCoordinateChangeX);
-                                    System.out.println(">>>>>>>> Event: " + event_x + "\t" + event_y);
+//                                    System.out.println(">>>> Spaceship: " + spaceship.getX() + "\t" + mouseCoordinateChangeX);
+//                                    System.out.println(">>>>>>>> Event: " + event_x + "\t" + event_y);
                                     refresh = 0;
                                     changePermittedX = true;
                                     changePermittedY = true;
@@ -182,6 +187,21 @@ public class Scroll extends Canvas implements MouseMotionListener, MouseListener
             th2.start();
         }
         catch (Exception e) {}
+    }
+
+    private void interClientHitCheck() {
+        for (String playerName: GameServer.joinedPlayers){
+            int index = GameServer.joinedPlayers.indexOf(playerName);
+            for (Bullet bullet:ListOfBullets.Bullets){
+                if (!bullet.shooter.equals(playerName)){
+                    if (ListOfUsers.getPlayerObjByUsername(playerName).spaceship.checkCollisionClientBullet(bullet)){
+                        spaceship.explosionX = bullet.x_coordinate;
+                        spaceship.explosionY = bullet.y_coordinate;
+                        ListOfBullets.Bullets.remove(bullet);
+                    }
+                }
+            }
+        }
     }
 
     private void mouseCheck() {
@@ -215,6 +235,9 @@ public class Scroll extends Canvas implements MouseMotionListener, MouseListener
             }
             changePositionY = false;
         }
+
+        ListOfUsers.getPlayerObjByUsername(ListOfUsers.selectedUser).x_coordinate = spaceship.getX();
+        ListOfUsers.getPlayerObjByUsername(ListOfUsers.selectedUser).y_coordinate = spaceship.getY();
     }
 
 
@@ -324,6 +347,7 @@ public class Scroll extends Canvas implements MouseMotionListener, MouseListener
                         spaceship.explosionY = enemyFire.y_coordinate;
                         ListOfFirings.Firings.remove(enemyFire);
                     }
+                    //TODO: Collision of firings with clients' spaceships needs to be checked and performed.
                     /////////////////// Moving Bullets ///////////////////
                     enemyFire.fireMover.changeX(enemyFire);
                     enemyFire.fireMover.changeY(enemyFire);
@@ -337,7 +361,7 @@ public class Scroll extends Canvas implements MouseMotionListener, MouseListener
     private void spaceshipExplosionTimerUpdate() {
         if (spaceship.isExploded){
             spaceship.explosionTimer += timeStep;
-            if (spaceship.explosionTimer > 4000){
+            if (spaceship.explosionTimer > 1000){
                 spaceship.isExploded = false;
                 spaceship.explosionTimer = 0;
             }
@@ -443,7 +467,9 @@ public class Scroll extends Canvas implements MouseMotionListener, MouseListener
                                 Enemy enemy = ListOfEnemies.Enemies.get(j);
                                 enemyCounter.getAndIncrement();
                                 if (enemy.checkCollision(bullet)){
-                                    Scorer.enemyScore(enemy, bullet);
+                                    if (enemy.isDead){
+                                        Scorer.enemyScore(enemy, bullet);
+                                    }
                                     ListOfExplosions.updateList();
                                     ListOfBullets.Bullets.remove(bullet);
                                 }
@@ -458,12 +484,17 @@ public class Scroll extends Canvas implements MouseMotionListener, MouseListener
                                 Giant giant = ListOfGiants.Giants.get(j);
                                 giantCounter.getAndIncrement();
                                 if (giant.checkCollision(bullet)){
+                                    if (giant.isDead){
+                                        Scorer.giantScore(giant, bullet);
+                                    }
                                     ListOfExplosions.updateList();
                                     ListOfBullets.Bullets.remove(bullet);
                                 }
                             }
                         }
                     }
+                    /////////////////// Collision Check (With Other Players) ///////////////////
+                    //TODO: There needs to be a collision check with other clients' spaceships
                     /////////////////// Moving Bullets ///////////////////
                     bullet.bulletMover.changeX(bullet);
                     bullet.bulletMover.changeY(bullet);
@@ -788,7 +819,7 @@ public class Scroll extends Canvas implements MouseMotionListener, MouseListener
         //////////////////////////// Level 1 ////////////////////////////
         if (waveIdx == 1 && levelIdx == 1){
             waveIndexDraw = true;
-//            new EnemyGroup("Rectangular", 500, 100,"zigzag",  50);
+            new EnemyGroup("Rectangular", 500, 100,"zigzag",  50);
 //            new EnemyGroup("Circular", "Fixed", 500, -50, 55);
 //            new EnemyGroup("Rotational", 750, 400, 150, 60);
 //            new Giant("starDestroyer", levelIdx * 250, 200, 100);
