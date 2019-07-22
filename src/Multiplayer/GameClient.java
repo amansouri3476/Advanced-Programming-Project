@@ -24,6 +24,8 @@ public class GameClient implements Runnable {
     public JTextArea listOfPlayersTextArea;
     private JButton bSpectator;
     private JButton bPlayer;
+    protected static CopyOnWriteArrayList<Player> joinedPlayersObjects = new CopyOnWriteArrayList<>();
+    protected static ArrayList<String> joinedPlayersNames = new ArrayList<>();
     private static int counter = 1;
 
 
@@ -74,9 +76,12 @@ public class GameClient implements Runnable {
             // This has to be first because of the first time shake-hand
             run();
 
+            ListOfUsers.getPlayerObjByUsername(ListOfUsers.selectedUser).isSpectator = true;
+
             Thread thread1 = new Thread(() -> {
 //                container.setVisible(false);
-                ClientGameEventHandler clientGameEventHandler = new ClientGameEventHandler(true, container);
+//                ClientGameEventHandler clientGameEventHandler = new ClientGameEventHandler(true, container);
+                ClientGameEventHandler clientGameEventHandler = new ClientGameEventHandler(true);
                 clientGameEventHandler.run();
             });
             thread1.start(); /// preventing message passing from being blocked by the beginning of this thread.
@@ -86,9 +91,11 @@ public class GameClient implements Runnable {
             // This has to be first because of the first time shake-hand
             run();
 
+            ListOfUsers.getPlayerObjByUsername(ListOfUsers.selectedUser).isSpectator = false;
             Thread thread = new Thread(() -> {
 //                container.setVisible(false);
-                ClientGameEventHandler clientGameEventHandler = new ClientGameEventHandler(false, container);
+//                ClientGameEventHandler clientGameEventHandler = new ClientGameEventHandler(false, container);
+                ClientGameEventHandler clientGameEventHandler = new ClientGameEventHandler(false);
                 clientGameEventHandler.run();
             });
             thread.start(); /// preventing message passing from being blocked by the beginning of this thread.
@@ -140,17 +147,28 @@ public class GameClient implements Runnable {
                                 try {
                                     //////////////
                                     NetworkMessage serverUpdateMessage = (NetworkMessage) ois.readUnshared();
+                                    checkStatus(serverUpdateMessage);
                                     decodeMessage(serverUpdateMessage);
 
                                     Thread.sleep(2);
                                     ////////////// Only non-spectators are permitted to send messages.
                                     if (!ClientGameEventHandler.isSpectator){
-                                        NetworkMessage message = new NetworkMessage(ListOfBullets.clientBullets, BombList.clientBombs);
-                                        checkStatus(message);
+                                        NetworkMessage message = new NetworkMessage(ListOfClientBullets.clientBullets,
+                                                BombList.clientBombs, ListOfUsers.getPlayerObjByUsername(ListOfUsers.selectedUser));
+//                                        checkStatus(message);
                                         oos.writeUnshared(message);
                                         oos.reset();
                                         oos.flush();
                                         refreshClientLists();
+                                    }
+                                    else {
+                                        NetworkMessage message = new NetworkMessage(ListOfClientBullets.clientBullets,
+                                                BombList.clientBombs, ListOfUsers.getPlayerObjByUsername(ListOfUsers.selectedUser));
+//                                        checkStatus(message);
+                                        oos.writeUnshared(message);
+                                        oos.reset();
+                                        oos.flush();
+//                                        refreshClientLists();
                                     }
                                 } catch (IOException | ClassNotFoundException | InterruptedException e) {
                                     e.printStackTrace();
@@ -170,7 +188,7 @@ public class GameClient implements Runnable {
     }
 
     private void refreshClientLists() {
-        ListOfBullets.clientBullets.clear();
+        ListOfClientBullets.clientBullets.clear();
         BombList.clientBombs.clear();
     }
 
@@ -188,6 +206,8 @@ public class GameClient implements Runnable {
         ListOfFirings.Firings = serverUpdateMessage.Firings;
         ListOfGiants.Giants = serverUpdateMessage.Giants;
         ListOfPowerups.Powerups = serverUpdateMessage.Powerups;
+        joinedPlayersObjects = serverUpdateMessage.joinedPlayers;
+        joinedPlayersNames = serverUpdateMessage.joinedPlayersNames;
 
 //        ListOfUsers.getPlayerObjByUsername(ListOfUsers.selectedUser).score = (int) serverUpdateMessage.scoreDict.get(ListOfUsers.selectedUser);
 //        if (counter == 100){
@@ -201,7 +221,7 @@ public class GameClient implements Runnable {
 
     }
     private void checkStatus(NetworkMessage networkMessage) {
-//            System.out.println(networkMessage.a);
+//            System.out.println(">>>>>>>> Number of Bullets received from the server to the SPECTATOR: " + networkMessage.Bullets.size());
 //            System.out.println("Enemy 0 x coordinate: " + networkMessage.Enemies.get(0).x_coordinate);
 //            System.out.println("Number of Bullets: " + networkMessage.Bullets.size());
 //            System.out.println("Number of Enemies: " + networkMessage.Enemies.size());

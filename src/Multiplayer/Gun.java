@@ -31,7 +31,8 @@ public class Gun {
             System.out.println("Single Shot Accomplished");
             Bullet bullet = new Bullet(x, y, damage);
             bullet.bulletLabel.setBounds(x, y, 100, 100);
-            ListOfBullets.clientBullets.add(bullet);
+            ListOfClientBullets.clientBullets.add(bullet);
+
         }
 
     }
@@ -43,7 +44,8 @@ public class Gun {
             ClientScroll.timerD = 0;
             System.out.println("Long Shot Accomplished");
             Bullet bullet = new Bullet(x, y, damage);
-            ListOfBullets.clientBullets.add(bullet);
+            ListOfClientBullets.clientBullets.add(bullet);
+            ListOfClientBullets.heat += 5;
 
         }
     }
@@ -55,7 +57,9 @@ public class Gun {
             System.out.println("Long Shot Accomplished");
             Bullet bullet = new Bullet(x, y, damage);
             bullet.bulletLabel.setBounds(x, y, 100, 100);
-            ListOfBullets.clientBullets.add(bullet);
+            ListOfClientBullets.clientBullets.add(bullet);
+            ListOfClientBullets.heat += 5;
+
 
         }
 

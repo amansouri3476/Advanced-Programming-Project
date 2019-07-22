@@ -215,6 +215,9 @@ public class Scroll extends Canvas implements MouseMotionListener, MouseListener
             }
             changePositionY = false;
         }
+
+        ListOfUsers.getPlayerObjByUsername(ListOfUsers.selectedUser).x_coordinate = spaceship.getX();
+        ListOfUsers.getPlayerObjByUsername(ListOfUsers.selectedUser).y_coordinate = spaceship.getY();
     }
 
 

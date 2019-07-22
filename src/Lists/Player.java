@@ -1,5 +1,6 @@
 package Lists;
 
+import GameObjects.Spaceship;
 import Screen.GamePlayScrolling.GameEventHandler;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -14,9 +15,11 @@ public class Player implements Serializable {
     public static JSONArray players=new JSONArray();
 
     public int score;
-    double x_coordinate, y_coordinate;
+    public int x_coordinate, y_coordinate;
     private String userName;
     public boolean canResume;
+    public boolean isExploded = false;
+    public boolean isSpectator;
     JLabel spaceshipLabel;
     public Player(String name){
         player.put("name",name);

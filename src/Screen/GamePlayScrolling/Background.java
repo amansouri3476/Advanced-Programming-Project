@@ -4,6 +4,7 @@ import GameObjects.Giant;
 import Lists.*;
 import Multiplayer.ClientGameEventHandler;
 import Multiplayer.ClientScroll;
+import Multiplayer.GameServer;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -158,21 +159,68 @@ public class Background {
 //        BufferedImage i = ImageIO.read(new File("C:\\Users\\Amin\\IdeaProjects\\ChickenInvaders\\src\\GameAssets\\star_wars_logo_PNG36.png"));
 //        g.drawImage(logo, null, 20, 300);
 //        g.drawImage(death_star, null, 1000, 250);
-        if (!GameEventHandler.spaceship.isExploded){
-            g.drawImage(destroyer, null, GameEventHandler.spaceship.x_coordinate, GameEventHandler.spaceship.y_coordinate);
+        //////////////////////// Drawing Player(s) Spaceships ///////////////////////////
+        if (!GameServer.isMultiplayer){
+            if (!GameEventHandler.spaceship.isExploded){
+                g.drawImage(destroyer, null, GameEventHandler.spaceship.x_coordinate, GameEventHandler.spaceship.y_coordinate);
 
-            // Displaying player's Name
-            g.setFont(new Font("Georgia", Font.ITALIC, 32));
-            g.setColor(Color.ORANGE);
-            g.drawString(ListOfUsers.selectedUser, GameEventHandler.spaceship.x_coordinate + 20, GameEventHandler.spaceship.y_coordinate + 100);
+                // Displaying player's Name
+                g.setFont(new Font("Georgia", Font.ITALIC, 32));
+                g.setColor(Color.ORANGE);
+                g.drawString(ListOfUsers.selectedUser, GameEventHandler.spaceship.x_coordinate + 20, GameEventHandler.spaceship.y_coordinate + 100);
+            }
+            else {
+                g.drawImage(destroyer_respawn, null, GameEventHandler.spaceship.x_coordinate, GameEventHandler.spaceship.y_coordinate);
+            }
+            g.drawImage(engineBackground, null, 10, 700);
+            g.drawImage(heart, null, 25, 725);
+            g.drawImage(rocket_small, null, 95, 725);
+            g.drawImage(tieSmall, null, 205, 720);
         }
         else {
-            g.drawImage(destroyer_respawn, null, GameEventHandler.spaceship.x_coordinate, GameEventHandler.spaceship.y_coordinate);
+            //////////////// Server Spaceship and Details ////////////////
+            if (!GameEventHandler.spaceship.isExploded){
+                g.drawImage(destroyer, null, GameEventHandler.spaceship.x_coordinate, GameEventHandler.spaceship.y_coordinate);
+
+                // Displaying player's Name
+                g.setFont(new Font("Georgia", Font.ITALIC, 32));
+                g.setColor(Color.ORANGE);
+                g.drawString(ListOfUsers.selectedUser, GameEventHandler.spaceship.x_coordinate + 20, GameEventHandler.spaceship.y_coordinate + 100);
+            }
+            else {
+                g.drawImage(destroyer_respawn, null, GameEventHandler.spaceship.x_coordinate, GameEventHandler.spaceship.y_coordinate);
+                g.setFont(new Font("Georgia", Font.ITALIC, 32));
+                g.setColor(Color.ORANGE);
+                g.drawString(ListOfUsers.selectedUser, GameEventHandler.spaceship.x_coordinate + 20, GameEventHandler.spaceship.y_coordinate + 100);
+            }
+            g.drawImage(engineBackground, null, 10, 700);
+            g.drawImage(heart, null, 25, 725);
+            g.drawImage(rocket_small, null, 95, 725);
+            g.drawImage(tieSmall, null, 205, 720);
+            //////////////// Other Players' Spaceships ////////////////
+            for (Player player: GameServer.joinedPlayersObjects){
+                if (player.getUserName().equals(ListOfUsers.selectedUser)){
+                    // So as not to draw server's spaceship twice
+                }
+                else {
+                    if (!player.isExploded && !player.isSpectator){
+                        g.drawImage(destroyer, null, player.x_coordinate, player.y_coordinate);
+
+                        // Displaying player's Name
+                        g.setFont(new Font("Georgia", Font.ITALIC, 32));
+                        g.setColor(Color.GREEN);
+                        g.drawString(player.getUserName(), player.x_coordinate + 20, player.y_coordinate + 100);
+                    }
+                    else {
+                        // Should include a condition so as to draw just when 'join request' is sent.
+                        g.drawImage(destroyer_respawn, null, player.x_coordinate, player.y_coordinate);
+                        g.setFont(new Font("Georgia", Font.ITALIC, 32));
+                        g.setColor(Color.GREEN);
+                        g.drawString(player.getUserName(), player.x_coordinate + 20, player.y_coordinate + 100);
+                    }
+                }
+            }
         }
-        g.drawImage(engineBackground, null, 10, 700);
-        g.drawImage(heart, null, 25, 725);
-        g.drawImage(rocket_small, null, 95, 725);
-        g.drawImage(tieSmall, null, 205, 720);
 
 
         if (showSafeZone){

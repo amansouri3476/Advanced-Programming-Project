@@ -57,7 +57,7 @@ import java.net.URL;
  * @version @(#)Juke.java	1.19 00/01/31
  * @author Brian Lichtenwalter  
  */
-public class Juke extends JPanel implements Runnable, LineListener, MetaEventListener, ControlContext {
+public class Juke extends JPanel implements Runnable, LineListener, MetaEventListener {
 
     final int bufSize = 16384;
     PlaybackMonitor playbackMonitor = new PlaybackMonitor();
@@ -152,7 +152,7 @@ public class Juke extends JPanel implements Runnable, LineListener, MetaEventLis
             }
         } catch (SecurityException ex) {
             reportStatus(ex.toString());
-            JavaSound.showInfoDialog();
+//            JavaSound.showInfoDialog();
         } catch (Exception ex) {
             reportStatus(ex.toString());
         }
@@ -847,7 +847,7 @@ public class Juke extends JPanel implements Runnable, LineListener, MetaEventLis
                     text = System.getProperty("user.dir") + sep;
                 } catch (SecurityException ex) {
                     reportStatus(ex.toString());
-                    JavaSound.showInfoDialog();
+//                    JavaSound.showInfoDialog();
                     return;
                 }
                 textField = new JTextField(text);

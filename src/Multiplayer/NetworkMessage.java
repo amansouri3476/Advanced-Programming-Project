@@ -21,7 +21,10 @@ public class NetworkMessage implements Serializable {
     CopyOnWriteArrayList<EnemyFire> Firings;
     CopyOnWriteArrayList<Giant> Giants;
     CopyOnWriteArrayList<Powerup> Powerups;
+    CopyOnWriteArrayList<Player> joinedPlayers;
+    ArrayList<String> joinedPlayersNames;
     Dictionary scoreDict;
+    Player player;
 
     NetworkMessage(){
 //        int spaceship_x = GameEventHandler.spaceship.x_coordinate;
@@ -35,6 +38,9 @@ public class NetworkMessage implements Serializable {
         this.Firings = ListOfFirings.Firings;
         this.Giants = ListOfGiants.Giants;
         this.Powerups = ListOfPowerups.Powerups;
+
+        this.joinedPlayers = GameServer.joinedPlayersObjects;
+        this.joinedPlayersNames = GameServer.joinedPlayers;
 
 //        this.scoreDict = scoreDictionary(GameServer.joinedPlayers);
     }
@@ -50,7 +56,7 @@ public class NetworkMessage implements Serializable {
     }
 
 
-    public NetworkMessage(CopyOnWriteArrayList<Bullet> bullets, CopyOnWriteArrayList<Bomb> bombs) {
+    public NetworkMessage(CopyOnWriteArrayList<Bullet> bullets, CopyOnWriteArrayList<Bomb> bombs, Player player) {
         if (bombs.size() == 0){
             this.Bombs = null;
         }
@@ -67,5 +73,7 @@ public class NetworkMessage implements Serializable {
         this.Firings = null;
         this.Giants = null;
         this.Powerups = null;
+
+        this.player = player;
     }
 }

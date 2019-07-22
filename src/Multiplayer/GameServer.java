@@ -26,8 +26,9 @@ public class GameServer implements Runnable {
     public Container container;
     private JTextArea messages;
 
-    public boolean isMultiplayer = false;
+    public static boolean isMultiplayer = false;
     public static ArrayList<String> joinedPlayers = new ArrayList<>();
+    public static CopyOnWriteArrayList<Player> joinedPlayersObjects = new CopyOnWriteArrayList<>();
     private static NetworkMessage networkMessage = new NetworkMessage();
     private static int counter = 1;
     private int numberOfPlayers;
@@ -39,6 +40,7 @@ public class GameServer implements Runnable {
         // Transparent 16 x 16 pixel cursor image.
         this.container = contentPane;
         GameServer.joinedPlayers.add(ListOfUsers.selectedUser);
+        GameServer.joinedPlayersObjects.add(ListOfUsers.getPlayerObjByUsername(ListOfUsers.selectedUser));
         container.removeAll();
         this.numberOfPlayers = Integer.valueOf(player_number);
 
@@ -85,7 +87,7 @@ public class GameServer implements Runnable {
             System.out.println("Server Started The Game!");
 //            container.setVisible(false);
             Thread thread1 = new Thread(() -> {
-                GameEventHandler gameEventHandler = new GameEventHandler(container);
+                GameEventHandler gameEventHandler = new GameEventHandler();
                 gameEventHandler.run();
             });
             thread1.start(); /// preventing message passing from being blocked by the beginning of this thread.

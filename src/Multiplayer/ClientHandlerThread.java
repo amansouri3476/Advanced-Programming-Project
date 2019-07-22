@@ -8,6 +8,8 @@ import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ClientHandlerThread implements Runnable {
 
@@ -31,6 +33,11 @@ public class ClientHandlerThread implements Runnable {
             ////////////////// Shaking Hands //////////////////
             String shakeHandMessage = (String) ois.readUnshared();
             GameServer.joinedPlayers.add(shakeHandMessage);
+            /* TODO: If a new player joins the game which has not registered before, server encounters a problem
+                hence ListOfUsers needs to be updated upon shake-hand message.
+             */
+
+            GameServer.joinedPlayersObjects.add(ListOfUsers.getPlayerObjByUsername(shakeHandMessage));
             this.clientName = shakeHandMessage;
             ////////////////// Sending Messages to clients //////////////////
             Thread senderThread = new Thread(() -> {
@@ -43,9 +50,13 @@ public class ClientHandlerThread implements Runnable {
                         oos.reset();
                         oos.flush();
 
-                        ////////////////
-                        NetworkMessage serverUpdateMessage = (NetworkMessage) ois.readUnshared();
-//                        decodeMessage(serverUpdateMessage);
+                        //////////////// Only listen to non-spectators. (Otherwise because of the lack of
+                        // messages, listen will block the program.
+                        // Other solution would be to send empty messages until spectator decides to join.
+//                        if (!ClientGameEventHandler.isSpectator){
+                            NetworkMessage serverUpdateMessage = (NetworkMessage) ois.readUnshared();
+                            decodeMessage(serverUpdateMessage);
+//                        }
                         ///////////////
                         Thread.sleep(2);
                     } catch (IOException | ClassNotFoundException | InterruptedException e) {
@@ -101,6 +112,12 @@ public class ClientHandlerThread implements Runnable {
         }
         if (serverUpdateMessage.Powerups != null){
             ListOfPowerups.Powerups = serverUpdateMessage.Powerups;
+        }
+        if (serverUpdateMessage.player != null){
+            int index = GameServer.joinedPlayers.indexOf(serverUpdateMessage.player.getUserName());
+            GameServer.joinedPlayersObjects.get(index).x_coordinate = serverUpdateMessage.player.x_coordinate;
+            GameServer.joinedPlayersObjects.get(index).y_coordinate = serverUpdateMessage.player.y_coordinate;
+            GameServer.joinedPlayersObjects.get(index).isSpectator = serverUpdateMessage.player.isSpectator;
         }
 //        if (counter == 100){
 //            System.out.println("Enemy 0 x coordinate: " + serverUpdateMessage.Enemies.get(0).x_coordinate);

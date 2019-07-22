@@ -8,7 +8,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class ListOfBullets {
 
     public static CopyOnWriteArrayList<Bullet> Bullets = new CopyOnWriteArrayList<>();
-    public static CopyOnWriteArrayList<Bullet> clientBullets = new CopyOnWriteArrayList<>();
     public static float heat=0;
 
     public ListOfBullets() {}
