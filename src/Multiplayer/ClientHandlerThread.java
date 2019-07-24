@@ -42,19 +42,19 @@ public class ClientHandlerThread implements Runnable {
             ////////////////// Sending Messages to clients //////////////////
             Thread senderThread = new Thread(() -> {
                 while (true){
-//                        System.out.println(">>>>>>>>>>>>>>Server");
                     try {
                         NetworkMessage message = new NetworkMessage();
 //                        checkStatus(message);
                         oos.writeUnshared(message);
+                        System.out.println(">>>>>>>>>>>>>> Server sent a message");
                         oos.reset();
                         oos.flush();
-
                         //////////////// Only listen to non-spectators. (Otherwise because of the lack of
                         // messages, listen will block the program.
                         // Other solution would be to send empty messages until spectator decides to join.
 //                        if (!ClientGameEventHandler.isSpectator){
                             NetworkMessage serverUpdateMessage = (NetworkMessage) ois.readUnshared();
+                        System.out.println(">>>>>>>>>>>>>> Server received a message");
                             decodeMessage(serverUpdateMessage);
 //                        }
                         ///////////////
@@ -68,6 +68,7 @@ public class ClientHandlerThread implements Runnable {
                             GameServer.joinedPlayersObjects.remove(ListOfUsers.getPlayerObjByUsername(clientName));
                             GameServer.joinedPlayers.remove(clientName);
                             sChannel.close();
+                            System.out.println("Client disconnected.");
                             break;
                         } catch (IOException e1) {
                             e1.printStackTrace();
@@ -129,6 +130,7 @@ public class ClientHandlerThread implements Runnable {
             GameServer.joinedPlayersObjects.get(index).x_coordinate = serverUpdateMessage.player.x_coordinate;
             GameServer.joinedPlayersObjects.get(index).y_coordinate = serverUpdateMessage.player.y_coordinate;
             GameServer.joinedPlayersObjects.get(index).isSpectator = serverUpdateMessage.player.isSpectator;
+            GameServer.joinedPlayersObjects.get(index).spaceship = serverUpdateMessage.player.spaceship;
         }
 //        if (counter == 100){
 //            System.out.println("Enemy 0 x coordinate: " + serverUpdateMessage.Enemies.get(0).x_coordinate);

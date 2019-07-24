@@ -205,7 +205,7 @@ public class Background {
                     // So as not to draw server's spaceship twice
                 }
                 else {
-                    System.out.println(">>>>>>>>>>>>>>> username of spaceship: " + player.getUserName() + "\t" + GameServer.joinedPlayersObjects.size() + "\t" + GameServer.joinedPlayers.size());
+//                    System.out.println(">>>>>>>>>>>>>>> username of spaceship: " + player.getUserName() + "\t" + GameServer.joinedPlayersObjects.size() + "\t" + GameServer.joinedPlayers.size());
                     if (!player.isExploded && !player.isSpectator){
                         g.drawImage(destroyer, null, player.x_coordinate, player.y_coordinate);
 

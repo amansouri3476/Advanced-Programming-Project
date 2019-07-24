@@ -147,6 +147,7 @@ public class GameClient implements Runnable {
                                 try {
                                     //////////////
                                     NetworkMessage serverUpdateMessage = (NetworkMessage) ois.readUnshared();
+                                    System.out.println(">>>>>>>>>>>>>> Receiver received a message");
                                     checkStatus(serverUpdateMessage);
                                     decodeMessage(serverUpdateMessage);
 
@@ -156,6 +157,7 @@ public class GameClient implements Runnable {
                                         NetworkMessage message = new NetworkMessage(ListOfClientBullets.clientBullets,
                                                 BombList.clientBombs, ListOfUsers.getPlayerObjByUsername(ListOfUsers.selectedUser));
 //                                        checkStatus(message);
+                                        System.out.println(">>>>>>>>>>>>>> Receiver sent a message");
                                         oos.writeUnshared(message);
                                         oos.reset();
                                         oos.flush();
@@ -171,7 +173,8 @@ public class GameClient implements Runnable {
 //                                        refreshClientLists();
                                     }
                                 } catch (IOException | ClassNotFoundException | InterruptedException e) {
-                                    e.printStackTrace();
+//                                    e.printStackTrace();
+                                    continue;
                                 }
                             }
                         });
