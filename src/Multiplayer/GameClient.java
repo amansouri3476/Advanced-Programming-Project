@@ -139,6 +139,9 @@ public class GameClient implements Runnable {
                     oos.reset();
                     oos.flush();
 
+                    oos.writeUnshared(ClientGameEventHandler.spaceship);
+                    oos.reset();
+                    oos.flush();
                      ////////////////// Receiving Messages from the Server //////////////////
                         Thread receiverThread = new Thread(() -> {
                             while (true){
@@ -147,7 +150,7 @@ public class GameClient implements Runnable {
                                 try {
                                     //////////////
                                     NetworkMessage serverUpdateMessage = (NetworkMessage) ois.readUnshared();
-                                    System.out.println(">>>>>>>>>>>>>> Receiver received a message");
+//                                    System.out.println(">>>>>>>>>>>>>> Receiver received a message");
                                     checkStatus(serverUpdateMessage);
                                     decodeMessage(serverUpdateMessage);
 
@@ -157,7 +160,7 @@ public class GameClient implements Runnable {
                                         NetworkMessage message = new NetworkMessage(ListOfClientBullets.clientBullets,
                                                 BombList.clientBombs, ListOfUsers.getPlayerObjByUsername(ListOfUsers.selectedUser));
 //                                        checkStatus(message);
-                                        System.out.println(">>>>>>>>>>>>>> Receiver sent a message");
+//                                        System.out.println(">>>>>>>>>>>>>> Receiver sent a message");
                                         oos.writeUnshared(message);
                                         oos.reset();
                                         oos.flush();
@@ -212,6 +215,10 @@ public class GameClient implements Runnable {
 
         joinedPlayersObjects = serverUpdateMessage.joinedPlayers;
         joinedPlayersNames = serverUpdateMessage.joinedPlayersNames;
+
+        // Retrieving this client's info from the server
+        int index = joinedPlayersNames.indexOf(ListOfUsers.selectedUser);
+        ListOfUsers.getPlayerObjByUsername(ListOfUsers.selectedUser).spaceship = joinedPlayersObjects.get(index).spaceship;
 
         ClientScroll.score = (int) serverUpdateMessage.scoreDict.get(ListOfUsers.selectedUser);
 

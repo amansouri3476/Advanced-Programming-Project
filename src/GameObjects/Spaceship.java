@@ -7,15 +7,17 @@ import Movers.SpaceshipMover;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.Serializable;
 
-public class Spaceship extends coordinatedObject implements hasCoordinates, hasRange {
+public class Spaceship extends coordinatedObject implements hasCoordinates, hasRange, Serializable {
     public static Gun gun;
-    public Container container;
-    public static JLabel spaceshipLabel;
-    public static BufferedImage spaceshipImage;
-    public static SpaceshipMover spaceshipMover;
+    public transient Container container;
+    public transient static JLabel spaceshipLabel;
+    public transient static BufferedImage spaceshipImage;
+//    public static SpaceshipMover spaceshipMover;
     public boolean isExploded=false;
     public int explosionTimer=0;
+    public int explosionTimerLimit=2000;
     public int explosionX;
     public int explosionY;
     int rangeX=120;
@@ -27,7 +29,7 @@ public class Spaceship extends coordinatedObject implements hasCoordinates, hasR
     public Spaceship(Container container, JLabel spaceshipLabel){
         System.out.println("GameObjects.Spaceship Constructed");
         Spaceship.gun = new Gun(container, spaceshipLabel);
-        Spaceship.spaceshipMover = new SpaceshipMover();
+//        Spaceship.spaceshipMover = new SpaceshipMover();
         this.container = container;
         this.spaceshipLabel = spaceshipLabel;
         this.x_coordinate = 750;
@@ -69,6 +71,18 @@ public class Spaceship extends coordinatedObject implements hasCoordinates, hasR
         return false;
     }
 
+    public static boolean checkCollisionMultiplayer(EnemyFire enemyFire, Spaceship spaceship) {
+        int rangeX=120;
+        int rangeY=90;
+
+        if (spaceship.getX() < enemyFire.getX() && enemyFire.getX() < spaceship.getX() + rangeX && spaceship.getY() < enemyFire.getY() && enemyFire.getY() < spaceship.getY() + rangeY){
+            spaceship.isExploded = true;
+            new LoopSound("C:\\Users\\Amin\\IdeaProjects\\StarWars\\src\\GameAssets\\Sonic_Boom.wav", false);
+            return true;
+        }
+        return false;
+    }
+
     public boolean checkCollisionPowerup(Powerup powerup) {
         if (this.getX() < powerup.getX() && powerup.getX() < this.getX() + rangeX && this.getY() + rangeY > powerup.getY() && powerup.getY() > this.getY()){
 //            new LoopSound("C:\\Users\\Amin\\IdeaProjects\\StarWars\\src\\GameAssets\\Sonic_Boom.wav", false);
@@ -77,9 +91,10 @@ public class Spaceship extends coordinatedObject implements hasCoordinates, hasR
         return false;
     }
 
-    public boolean checkCollisionClientBullets(Bullet bullet) {
-        if (this.getX() < bullet.getX() && bullet.getX() < this.getX() + rangeX && this.getY() < bullet.getY() && bullet.getY() < this.getY() + rangeY){
-            this.isExploded = true;
+    public static boolean checkCollisionClientBullets(Bullet bullet, Spaceship spaceship) {
+        int rangeX=120;
+        int rangeY=90;
+        if (spaceship.getX() < bullet.getX() && bullet.getX() < spaceship.getX() + rangeX && spaceship.getY() < bullet.getY() + 80 && bullet.getY() + 80 < spaceship.getY() + rangeY){
             new LoopSound("C:\\Users\\Amin\\IdeaProjects\\StarWars\\src\\GameAssets\\Sonic_Boom.wav", false);
             return true;
         }

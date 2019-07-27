@@ -21,7 +21,7 @@ public class Player implements Serializable {
     public boolean canResume;
     public boolean isExploded = false;
     public boolean isSpectator;
-    JLabel spaceshipLabel;
+    transient JLabel spaceshipLabel;
     public Player(String name){
         player.put("name",name);
         players.add(player);
@@ -44,11 +44,11 @@ public class Player implements Serializable {
     public String getUserName(){
         return userName;
     }
-    public double getX_coordinate(){
+    public int getX_coordinate(){
         return x_coordinate;
     }
 
-    public double getY_coordinate() {
+    public int getY_coordinate() {
         return y_coordinate;
     }
 

@@ -182,7 +182,7 @@ public class ClientScroll extends Canvas implements MouseMotionListener, MouseLi
 
         ListOfUsers.getPlayerObjByUsername(ListOfUsers.selectedUser).x_coordinate = spaceship.getX();
         ListOfUsers.getPlayerObjByUsername(ListOfUsers.selectedUser).y_coordinate = spaceship.getY();
-//        ListOfUsers.getPlayerObjByUsername(ListOfUsers.selectedUser).spaceship = spaceship;
+        ListOfUsers.getPlayerObjByUsername(ListOfUsers.selectedUser).spaceship = spaceship;
     }
 
     @Override
@@ -438,6 +438,7 @@ public class ClientScroll extends Canvas implements MouseMotionListener, MouseLi
         }
     }
 
+    // Mouse and Keyboard Events
     @Override
     public void keyTyped(KeyEvent e) {
 

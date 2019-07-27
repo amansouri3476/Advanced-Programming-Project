@@ -9,6 +9,8 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import static Multiplayer.ClientGameEventHandler.spaceship;
+
 public class NetworkMessage implements Serializable {
 
     //        int spaceship_x = GameEventHandler.spaceship.x_coordinate;
@@ -24,6 +26,7 @@ public class NetworkMessage implements Serializable {
     CopyOnWriteArrayList<Player> joinedPlayers;
     ArrayList<String> joinedPlayersNames;
     Dictionary scoreDict;
+    Spaceship spaceship;
     Player player;
 
     NetworkMessage(){

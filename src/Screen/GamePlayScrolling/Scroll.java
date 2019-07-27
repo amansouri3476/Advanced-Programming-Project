@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static Multiplayer.GameServer.isMultiplayer;
 import static Screen.GamePlayScrolling.GameEventHandler.*;
 
 @SuppressWarnings("ALL")
@@ -190,31 +191,91 @@ public class Scroll extends Canvas implements MouseMotionListener, MouseListener
     }
 
     private void clientBulletsSpaceshipCollisionCheck() {
-//        for (String playerName : GameServer.joinedPlayers){
-//            for (Bullet bullet: ListOfBullets.Bullets){
-//                int index = GameServer.joinedPlayers.indexOf(playerName);
-//                if (GameServer.joinedPlayersObjects.get(index).spaceship.checkCollisionClientBullets(bullet)){
-//                    if (!bullet.shooter.equals(playerName)){
-//                        ListOfUsers.getPlayerObjByUsername(playerName).isExploded = true;
-//                        ListOfUsers.getPlayerObjByUsername(bullet.shooter).score += 100;
-//                        ListOfBullets.Bullets.remove(bullet);
-//                    }
-//                }
-//            }
-//        }
+        for (String playerName : GameServer.joinedPlayers){
+            // adding server spaceship to avoid the null pointer exception.
+            int index_1 = GameServer.joinedPlayers.indexOf(ListOfUsers.selectedUser);
+            GameServer.joinedPlayersObjects.get(index_1).spaceship = spaceship;
+            int index = GameServer.joinedPlayers.indexOf(playerName);
+            for (Bullet bullet: ListOfBullets.Bullets){
+                if (!bullet.shooter.equals(playerName)){
+                    System.out.println(">>>>> CLIENTS' BULLETS: \t shooter: " + bullet.shooter + "\t---->" + playerName + " which is exploded: " + GameServer.joinedPlayersObjects.get(index).spaceship.isExploded);
+                    System.out.println(">>>>> Collision or not: " + Spaceship.checkCollisionClientBullets(bullet, GameServer.joinedPlayersObjects.get(index).spaceship));
+                    if (Spaceship.checkCollisionClientBullets(bullet, GameServer.joinedPlayersObjects.get(index).spaceship) && !GameServer.joinedPlayersObjects.get(index).spaceship.isExploded){
+                            System.out.println(">>>>> CLIENT HIT: " + playerName);
+                            GameServer.joinedPlayersObjects.get(index).spaceship.isExploded = true;
+                            int idx = GameServer.joinedPlayers.indexOf(bullet.shooter);
+                            GameServer.joinedPlayersObjects.get(idx).score += 100;
+
+                            GameServer.joinedPlayersObjects.get(index).spaceship.explosionX = bullet.x_coordinate;
+                            GameServer.joinedPlayersObjects.get(index).spaceship.explosionY = bullet.y_coordinate;
+                            ListOfBullets.Bullets.remove(bullet);
+                    }
+
+                }
+            }
+        }
     }
 
-    private void interClientHitCheck() {
-        for (String playerName: GameServer.joinedPlayers){
-            int index = GameServer.joinedPlayers.indexOf(playerName);
-            for (Bullet bullet:ListOfBullets.Bullets){
-                if (!bullet.shooter.equals(playerName)){
-                    if (ListOfUsers.getPlayerObjByUsername(playerName).spaceship.checkCollisionClientBullet(bullet)){
-                        spaceship.explosionX = bullet.x_coordinate;
-                        spaceship.explosionY = bullet.y_coordinate;
-                        ListOfBullets.Bullets.remove(bullet);
+    private void firingsMoving() {
+        if (!isMultiplayer) {
+            if (!ListOfFirings.Firings.isEmpty()) {
+                AtomicInteger fireCounter = new AtomicInteger(0);
+                synchronized (ListOfFirings.Firings) {
+                    for (int i = 0; i < ListOfFirings.Firings.size(); i++) {
+                        EnemyFire enemyFire = ListOfFirings.Firings.get(i);
+                        fireCounter.getAndIncrement();
+
+                        /////////////////// Collision Check ///////////////////
+                        if (spaceship.checkCollision(enemyFire)) {
+                            spaceship.explosionX = enemyFire.x_coordinate;
+                            spaceship.explosionY = enemyFire.y_coordinate;
+                            ListOfFirings.Firings.remove(enemyFire);
+
+                        }
+                        else {
+                            /////////////////// Moving Bullets ///////////////////
+                            enemyFire.fireMover.changeX(enemyFire);
+                            enemyFire.fireMover.changeY(enemyFire);
+
+                        }
                     }
                 }
+            }
+        }
+        else {
+            try{
+                for (String playerName : GameServer.joinedPlayers){
+                    // adding server spaceship to avoid the null pointer exception.
+                    int index_1 = GameServer.joinedPlayers.indexOf(ListOfUsers.selectedUser);
+                    GameServer.joinedPlayersObjects.get(index_1).spaceship = spaceship;
+                    int index = GameServer.joinedPlayers.indexOf(playerName);
+//                    System.out.println(">>>>> ENEMIES' FIRINGS: " + playerName + "\t" + GameServer.joinedPlayersObjects.get(index).spaceship);
+                    if (!ListOfFirings.Firings.isEmpty()) {
+                        AtomicInteger fireCounter = new AtomicInteger(0);
+                        synchronized (ListOfFirings.Firings) {
+                            for (int i = 0; i < ListOfFirings.Firings.size(); i++) {
+                                EnemyFire enemyFire = ListOfFirings.Firings.get(i);
+                                fireCounter.getAndIncrement();
+
+                                /////////////////// Collision Check ///////////////////
+                                if (Spaceship.checkCollisionMultiplayer(enemyFire, GameServer.joinedPlayersObjects.get(index).spaceship)) {
+                                    GameServer.joinedPlayersObjects.get(index).spaceship.explosionX = enemyFire.x_coordinate;
+                                    GameServer.joinedPlayersObjects.get(index).spaceship.explosionY = enemyFire.y_coordinate;
+                                    ListOfFirings.Firings.remove(enemyFire);
+                                } else {
+                                    /////////////////// Moving Bullets ///////////////////
+                                    enemyFire.fireMover.changeX(enemyFire);
+                                    enemyFire.fireMover.changeY(enemyFire);
+
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+            catch (NullPointerException e){
+
             }
         }
     }
@@ -263,20 +324,46 @@ public class Scroll extends Canvas implements MouseMotionListener, MouseListener
                 for (int i=0; i<ListOfGiants.Giants.size(); i++){
                     Giant giant = ListOfGiants.Giants.get(i);
                     giantCounter.getAndIncrement();
+
                     /////////////////// Collision Check ///////////////////
+                    if (!isMultiplayer){
+                        if (giant.checkCollisionSpaceship(spaceship) && !spaceship.isExploded){
+                            spaceship.isExploded = true;
+                            spaceship.explosionX = spaceship.x_coordinate - 50;
+                            spaceship.explosionY = spaceship.y_coordinate - 50;
 
-                    if (giant.checkCollisionSpaceship(spaceship) && !spaceship.isExploded){
-                        spaceship.isExploded = true;
-                        spaceship.explosionX = spaceship.x_coordinate - 50;
-                        spaceship.explosionY = spaceship.y_coordinate - 50;
-
-                        giant.health -= 20;
-                        if (giant.health <= 0){
-                            giant.isDead = true;
-                        }
+                            giant.health -= 20;
+                            if (giant.health <= 0){
+                                giant.isDead = true;
+                            }
 //                                    ListOfExplosions.updateList();
-                        LoopSound loopSound = new LoopSound("C:\\Users\\Amin\\IdeaProjects\\StarWars\\src\\GameAssets\\Sonic_Boom.wav", false);
+                            LoopSound loopSound = new LoopSound("C:\\Users\\Amin\\IdeaProjects\\StarWars\\src\\GameAssets\\Sonic_Boom.wav", false);
 //                                    ListOfEnemies.Enemies.remove(enemy);
+                        }
+                    }
+                    else {
+                        try {
+                            for (String playerName : GameServer.joinedPlayers) {
+                                // adding server spaceship to avoid the null pointer exception.
+                                int index_1 = GameServer.joinedPlayers.indexOf(ListOfUsers.selectedUser);
+                                GameServer.joinedPlayersObjects.get(index_1).spaceship = spaceship;
+                                int index = GameServer.joinedPlayers.indexOf(playerName);
+                                if (giant.checkCollisionSpaceship(GameServer.joinedPlayersObjects.get(index).spaceship) && !GameServer.joinedPlayersObjects.get(index).spaceship.isExploded) {
+                                    GameServer.joinedPlayersObjects.get(index).spaceship.isExploded = true;
+                                    GameServer.joinedPlayersObjects.get(index).spaceship.explosionX = GameServer.joinedPlayersObjects.get(index).spaceship.x_coordinate - 50;
+                                    GameServer.joinedPlayersObjects.get(index).spaceship.explosionY = GameServer.joinedPlayersObjects.get(index).spaceship.y_coordinate - 50;
+
+                                    giant.health -= 20;
+                                    if (giant.health <= 0) {
+                                        giant.isDead = true;
+                                    }
+                                    LoopSound loopSound = new LoopSound("C:\\Users\\Amin\\IdeaProjects\\StarWars\\src\\GameAssets\\Sonic_Boom.wav", false);
+                                }
+                            }
+                        }
+                        catch(NullPointerException e){
+
+                        }
                     }
                     giant.shoot(giant.x_coordinate, giant.y_coordinate);
                     /////////////////// Moving Giants ///////////////////
@@ -336,8 +423,29 @@ public class Scroll extends Canvas implements MouseMotionListener, MouseListener
                     powerupCounter.getAndIncrement();
 
                     /////////////////// Collision Check ///////////////////
-                    if (spaceship.checkCollisionPowerup(powerup)){
-                        ListOfPowerups.Powerups.remove(powerup);
+                    if (!isMultiplayer){
+                        if (spaceship.checkCollisionPowerup(powerup) && !spaceship.isExploded){
+                            //TODO: Collection of the above powerup should be done.
+                            ListOfPowerups.Powerups.remove(powerup);
+                        }
+                    }
+
+                    else {
+                        try{
+                            for (String playerName : GameServer.joinedPlayers){
+                                // adding server spaceship to avoid the null pointer exception.
+                                int index_1 = GameServer.joinedPlayers.indexOf(ListOfUsers.selectedUser);
+                                GameServer.joinedPlayersObjects.get(index_1).spaceship = spaceship;
+                                int index = GameServer.joinedPlayers.indexOf(playerName);
+                                if (GameServer.joinedPlayersObjects.get(index).spaceship.checkCollisionPowerup(powerup) && !GameServer.joinedPlayersObjects.get(index).spaceship.isExploded){
+                                    //TODO: Collection of the above powerup should be done.
+                                    ListOfPowerups.Powerups.remove(powerup);
+                                }
+                            }
+                        }
+                        catch (NullPointerException e){
+
+                        }
                     }
                     /////////////////// Moving Bullets ///////////////////
                     powerup.powerupMover.changeX(powerup);
@@ -348,37 +456,38 @@ public class Scroll extends Canvas implements MouseMotionListener, MouseListener
         }
     }
 
-    private void firingsMoving() {
-        if (!ListOfFirings.Firings.isEmpty()){
-            AtomicInteger fireCounter = new AtomicInteger(0);
-            synchronized (ListOfFirings.Firings){
-                for (int i=0; i<ListOfFirings.Firings.size(); i++){
-                    EnemyFire enemyFire = ListOfFirings.Firings.get(i);
-                    fireCounter.getAndIncrement();
 
-                    /////////////////// Collision Check ///////////////////
-                    if (spaceship.checkCollision(enemyFire)){
-                        spaceship.explosionX = enemyFire.x_coordinate;
-                        spaceship.explosionY = enemyFire.y_coordinate;
-                        ListOfFirings.Firings.remove(enemyFire);
-                    }
-                    //TODO: Collision of firings with clients' spaceships needs to be checked and performed.
-                    /////////////////// Moving Bullets ///////////////////
-                    enemyFire.fireMover.changeX(enemyFire);
-                    enemyFire.fireMover.changeY(enemyFire);
-
+    private void spaceshipExplosionTimerUpdate() {
+        if (!isMultiplayer){
+            if (spaceship.isExploded){
+                spaceship.explosionTimer += timeStep;
+                if (spaceship.explosionTimer > spaceship.explosionTimerLimit){
+                    spaceship.isExploded = false;
+                    spaceship.explosionTimer = 0;
                 }
             }
         }
-    }
+        else {
+            for (String playerName : GameServer.joinedPlayers){
+                // adding server spaceship to avoid the null pointer exception.
+                int index_1 = GameServer.joinedPlayers.indexOf(ListOfUsers.selectedUser);
+                GameServer.joinedPlayersObjects.get(index_1).spaceship = spaceship;
+                int index = GameServer.joinedPlayers.indexOf(playerName);
 
+//                System.out.println(">>>>> CLIENTS EXPLOSION TIMER: " + playerName + "\t" + GameServer.joinedPlayersObjects.get(index).spaceship);
+                try{
+                    if (GameServer.joinedPlayersObjects.get(index).spaceship.isExploded){
+                        GameServer.joinedPlayersObjects.get(index).spaceship.explosionTimer += timeStep;
+                    }
 
-    private void spaceshipExplosionTimerUpdate() {
-        if (spaceship.isExploded){
-            spaceship.explosionTimer += timeStep;
-            if (spaceship.explosionTimer > 1000){
-                spaceship.isExploded = false;
-                spaceship.explosionTimer = 0;
+                    if (GameServer.joinedPlayersObjects.get(index).spaceship.explosionTimer > GameServer.joinedPlayersObjects.get(index).spaceship.explosionTimerLimit){
+                        GameServer.joinedPlayersObjects.get(index).spaceship.isExploded = false;
+                        GameServer.joinedPlayersObjects.get(index).spaceship.explosionTimer = 0;
+                    }
+                }
+                catch (NullPointerException e){
+
+                }
             }
         }
     }
@@ -441,23 +550,43 @@ public class Scroll extends Canvas implements MouseMotionListener, MouseListener
                     Enemy enemy = ListOfEnemies.Enemies.get(i);
                     enemyCounter.getAndIncrement();
                     /////////////////// Collision Check ///////////////////
-
-                                if (enemy.checkCollisionSpaceship(spaceship) && !spaceship.isExploded){
-                                    spaceship.isExploded = true;
+                    if (!isMultiplayer){
+                        if (enemy.checkCollisionSpaceship(spaceship) && !spaceship.isExploded){
+                            spaceship.isExploded = true;
+                            enemy.isDead = true;
+                            spaceship.explosionX = spaceship.x_coordinate - 50;
+                            spaceship.explosionY = spaceship.y_coordinate - 50;
+                            //                                    ListOfExplosions.updateList();
+                            LoopSound loopSound = new LoopSound("C:\\Users\\Amin\\IdeaProjects\\StarWars\\src\\GameAssets\\Sonic_Boom.wav", false);
+                            enemy.isDead = true;
+                            //                                    ListOfEnemies.Enemies.remove(enemy);
+                        }
+                    }
+                    ////////////// Other Clients //////////////
+                    if (isMultiplayer){
+                        try{
+                            for (String playerName : GameServer.joinedPlayers){
+                                // adding server spaceship to avoid the null pointer exception.
+                                int index_1 = GameServer.joinedPlayers.indexOf(ListOfUsers.selectedUser);
+                                GameServer.joinedPlayersObjects.get(index_1).spaceship = spaceship;
+                                int index = GameServer.joinedPlayers.indexOf(playerName);
+                                if (enemy.checkCollisionSpaceship(GameServer.joinedPlayersObjects.get(index).spaceship) && !GameServer.joinedPlayersObjects.get(index).spaceship.isExploded){
+                                    GameServer.joinedPlayersObjects.get(index).spaceship.isExploded = true;
                                     enemy.isDead = true;
-                                    spaceship.explosionX = spaceship.x_coordinate - 50;
-                                    spaceship.explosionY = spaceship.y_coordinate - 50;
-//                                    ListOfExplosions.updateList();
+                                    GameServer.joinedPlayersObjects.get(index).spaceship.explosionX = GameServer.joinedPlayersObjects.get(index).spaceship.x_coordinate - 50;
+                                    GameServer.joinedPlayersObjects.get(index).spaceship.explosionY = GameServer.joinedPlayersObjects.get(index).spaceship.y_coordinate - 50;
                                     LoopSound loopSound = new LoopSound("C:\\Users\\Amin\\IdeaProjects\\StarWars\\src\\GameAssets\\Sonic_Boom.wav", false);
-                                    enemy.isDead = true;
-//                                    ListOfEnemies.Enemies.remove(enemy);
                                 }
+                            }
+                        }
+                        catch (NullPointerException e){
+
+                        }
+                    }
+
+
                     enemy.shoot(enemy.x_coordinate, enemy.y_coordinate);
                     /////////////////// Moving Enemies ///////////////////
-//                    if (!enemy.isInGroup){
-//                        enemy.enemyMover.changeX(enemy);
-//                        enemy.enemyMover.changeY(enemy);
-//                    }
                     enemy.enemyMover.changeX(enemy);
                     enemy.enemyMover.changeY(enemy);
                 }
@@ -833,7 +962,7 @@ public class Scroll extends Canvas implements MouseMotionListener, MouseListener
         //////////////////////////// Level 1 ////////////////////////////
         if (waveIdx == 1 && levelIdx == 1){
             waveIndexDraw = true;
-            new EnemyGroup("Rectangular", 500, 100,"zigzag",  50);
+//            new EnemyGroup("Rectangular", 500, 100,"zigzag",  50);
 //            new EnemyGroup("Circular", "Fixed", 500, -50, 55);
 //            new EnemyGroup("Rotational", 750, 400, 150, 60);
 //            new Giant("starDestroyer", levelIdx * 250, 200, 100);

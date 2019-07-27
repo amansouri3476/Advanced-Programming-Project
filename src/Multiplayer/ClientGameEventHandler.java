@@ -2,6 +2,7 @@ package Multiplayer;
 
 import GameObjects.Gun;
 import GameObjects.Spaceship;
+import Lists.ListOfUsers;
 import MovingBackground.ScrollingBackground;
 import MovingBackground.ScrollingBackground;
 import Screen.GamePlayScrolling.Scroll;

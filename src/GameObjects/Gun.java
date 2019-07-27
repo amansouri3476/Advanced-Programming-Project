@@ -4,15 +4,16 @@ import Screen.GamePlayScrolling.Scroll;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.Serializable;
 
 @SuppressWarnings("Duplicates")
-public class Gun {
+public class Gun implements Serializable {
 //public class GameObjects.Gun {
     public boolean overheated;
     public static int damage;
     public int level;
-    Container container;
-    JLabel spaceshipLabel;
+    transient Container container;
+    transient JLabel spaceshipLabel;
     Gun(Container container, JLabel spaceshipLabel){
         System.out.println("GameObjects.Gun Constructed");
         this.overheated = false;

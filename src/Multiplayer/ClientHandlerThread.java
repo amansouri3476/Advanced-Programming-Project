@@ -1,6 +1,8 @@
 package Multiplayer;
 
+import GameObjects.Spaceship;
 import Lists.*;
+import Screen.GamePlayScrolling.GameEventHandler;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -10,6 +12,8 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import static Screen.GamePlayScrolling.GameEventHandler.spaceship;
 
 public class ClientHandlerThread implements Runnable {
 
@@ -39,6 +43,10 @@ public class ClientHandlerThread implements Runnable {
 
             GameServer.joinedPlayersObjects.add(ListOfUsers.getPlayerObjByUsername(shakeHandMessage));
             this.clientName = shakeHandMessage;
+
+            Spaceship shakeHandMessage_2 = (Spaceship) ois.readUnshared();
+            int index = GameServer.joinedPlayers.indexOf(shakeHandMessage);
+            GameServer.joinedPlayersObjects.get(index).spaceship = shakeHandMessage_2;
             ////////////////// Sending Messages to clients //////////////////
             Thread senderThread = new Thread(() -> {
                 while (true){
@@ -46,7 +54,7 @@ public class ClientHandlerThread implements Runnable {
                         NetworkMessage message = new NetworkMessage();
 //                        checkStatus(message);
                         oos.writeUnshared(message);
-                        System.out.println(">>>>>>>>>>>>>> Server sent a message");
+//                        System.out.println(">>>>>>>>>>>>>> Server sent a message");
                         oos.reset();
                         oos.flush();
                         //////////////// Only listen to non-spectators. (Otherwise because of the lack of
@@ -126,11 +134,13 @@ public class ClientHandlerThread implements Runnable {
             ListOfPowerups.Powerups = serverUpdateMessage.Powerups;
         }
         if (serverUpdateMessage.player != null){
+            int index_1 = GameServer.joinedPlayers.indexOf(ListOfUsers.selectedUser);
+            GameServer.joinedPlayersObjects.get(index_1).spaceship = spaceship;
             int index = GameServer.joinedPlayers.indexOf(serverUpdateMessage.player.getUserName());
             GameServer.joinedPlayersObjects.get(index).x_coordinate = serverUpdateMessage.player.x_coordinate;
             GameServer.joinedPlayersObjects.get(index).y_coordinate = serverUpdateMessage.player.y_coordinate;
             GameServer.joinedPlayersObjects.get(index).isSpectator = serverUpdateMessage.player.isSpectator;
-            GameServer.joinedPlayersObjects.get(index).spaceship = serverUpdateMessage.player.spaceship;
+//            GameServer.joinedPlayersObjects.get(index).spaceship = serverUpdateMessage.player.spaceship;
         }
 //        if (counter == 100){
 //            System.out.println("Enemy 0 x coordinate: " + serverUpdateMessage.Enemies.get(0).x_coordinate);
