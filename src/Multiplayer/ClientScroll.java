@@ -102,55 +102,6 @@ public class ClientScroll extends Canvas implements MouseMotionListener, MouseLi
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {
-
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-
-    }
-    @Override
-    public void mouseClicked(MouseEvent e){
-        eventOutput("Mouse clicked", e);
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e){
-        eventOutput("Mouse pressed", e);
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e){
-        eventOutput("Mouse released", e);
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseDragged(MouseEvent e) {
-        eventOutput("Mouse dragged", e);
-    }
-
-    @Override
-    public void mouseMoved(MouseEvent e) {
-        eventOutput("Mouse moved", e);
-    }
-
-    @Override
     public void run() {
 
         try {
@@ -175,6 +126,7 @@ public class ClientScroll extends Canvas implements MouseMotionListener, MouseLi
                         /////////////////////////// Next Step ///////////////////////////
                         try {
                             Thread.sleep(timeStep);
+//                            System.out.println(ListOfBullets.Bullets.size());
                             if (refresh == 10){
                                 refresh = 0;
                                 changePermittedX = true;
@@ -230,8 +182,7 @@ public class ClientScroll extends Canvas implements MouseMotionListener, MouseLi
 
         ListOfUsers.getPlayerObjByUsername(ListOfUsers.selectedUser).x_coordinate = spaceship.getX();
         ListOfUsers.getPlayerObjByUsername(ListOfUsers.selectedUser).y_coordinate = spaceship.getY();
-        // passing the spaceship object to the player.
-        ListOfUsers.getPlayerObjByUsername(ListOfUsers.selectedUser).spaceship = spaceship;
+//        ListOfUsers.getPlayerObjByUsername(ListOfUsers.selectedUser).spaceship = spaceship;
     }
 
     @Override
@@ -485,6 +436,55 @@ public class ClientScroll extends Canvas implements MouseMotionListener, MouseLi
                 firstTimeMouseY = false;
             }
         }
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+
+    }
+    @Override
+    public void mouseClicked(MouseEvent e){
+        eventOutput("Mouse clicked", e);
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e){
+        eventOutput("Mouse pressed", e);
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e){
+        eventOutput("Mouse released", e);
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        eventOutput("Mouse dragged", e);
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        eventOutput("Mouse moved", e);
     }
 
 }

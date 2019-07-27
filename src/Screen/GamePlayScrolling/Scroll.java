@@ -189,6 +189,21 @@ public class Scroll extends Canvas implements MouseMotionListener, MouseListener
         catch (Exception e) {}
     }
 
+    private void clientBulletsSpaceshipCollisionCheck() {
+//        for (String playerName : GameServer.joinedPlayers){
+//            for (Bullet bullet: ListOfBullets.Bullets){
+//                int index = GameServer.joinedPlayers.indexOf(playerName);
+//                if (GameServer.joinedPlayersObjects.get(index).spaceship.checkCollisionClientBullets(bullet)){
+//                    if (!bullet.shooter.equals(playerName)){
+//                        ListOfUsers.getPlayerObjByUsername(playerName).isExploded = true;
+//                        ListOfUsers.getPlayerObjByUsername(bullet.shooter).score += 100;
+//                        ListOfBullets.Bullets.remove(bullet);
+//                    }
+//                }
+//            }
+//        }
+    }
+
     private void interClientHitCheck() {
         for (String playerName: GameServer.joinedPlayers){
             int index = GameServer.joinedPlayers.indexOf(playerName);
@@ -470,7 +485,6 @@ public class Scroll extends Canvas implements MouseMotionListener, MouseListener
                                     if (enemy.isDead){
                                         Scorer.enemyScore(enemy, bullet);
                                     }
-                                    ListOfExplosions.updateList();
                                     ListOfBullets.Bullets.remove(bullet);
                                 }
                             }
