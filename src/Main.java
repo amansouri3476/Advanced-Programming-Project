@@ -28,20 +28,28 @@ public class Main {
 
         /* TODO
             1. Third Wave and all enemies should have hidden coordinates for smoother and clean movements.
-            2. Scoreboard for all players needs to be added.
-            3. Different Players Spaceships should be displayed on different screens (needs to send their location.)
-            4. engine heat of each player should be displayed properly according to the number of bullets it has shot.
-            5. Checking whether or not more than one client is able to join the game, both as an spectator or a player.
+            Done: 2. Scoreboard for all players needs to be added.
+            Done: 3. Different Players Spaceships should be displayed on different screens (needs to send their location.)
+            Done: 4. engine heat of each player should be displayed properly according to the number of bullets it has shot.
+            \Done: 5. Checking whether or not more than one client is able to join the game, both as an spectator or a player.
             6. Some powerups don't fall correctly. Their functioning needs to be debugged. Also there are too many
                 powerups falling and needs to be decreased
-            7. Every bullet and bomb should have an ID to indicate its shooter and enables scoring.
-            8. Client's shooting seems to have some problems. Reconsideration required.
+            Done: 7. Every bullet and bomb should have an ID to indicate its shooter and enables scoring.
+            Done: 8. Client's shooting seems to have some problems. Reconsideration required.
             9. In the network-message, each player only requires other's position and color (perhaps its remaining lives)
             10. According to latter, network-message requires a field containing the list of all players or a dictionary
                 with required values with respect to keys (which are the names of those who have joined the game)
-            11. Spaceship moving is completely the same as chicken invaders. It is not implemented using e.getX() and
+            Done: 11. Spaceship moving is completely the same as chicken invaders. It is not implemented using e.getX() and
                 e.getY() anymore so enabling the player to move between tabs without experiencing any glitches meanwhile.
             12. Later on, spectators need to be able to join the game when a new wave or level is initiated.
+            13. Joined players position is fixed and explodes all the time at the center.
+            14. Joined players are not collecting the powerups.
+            15. Powerups need have some effect!
+            16. Giants shooting pattern needs to be implemented.
+            17. Adding more giants to the game. (lack of time, as simple as possible)
+            18. Collision check could be done using radial distance.
+            19. Game Data file needs to be added.
+            20. Adding the health and coins and etc. for both S-player and M-player.
          */
     }
 }

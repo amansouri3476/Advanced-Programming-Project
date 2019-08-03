@@ -76,7 +76,7 @@ public class Enemy extends coordinatedObject implements hasRange, hasCoordinates
     public void death() {
         LoopSound loopSound = new LoopSound("C:\\Users\\Amin\\IdeaProjects\\StarWars\\src\\GameAssets\\Depth_Charge_Short.wav", false);
         double random = Math.random();
-        if (random < 0.6) {
+        if (random < 0.1) {
             new Powerup(this.x_coordinate, this.y_coordinate);
         }
     }

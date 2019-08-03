@@ -962,7 +962,7 @@ public class Scroll extends Canvas implements MouseMotionListener, MouseListener
         //////////////////////////// Level 1 ////////////////////////////
         if (waveIdx == 1 && levelIdx == 1){
             waveIndexDraw = true;
-//            new EnemyGroup("Rectangular", 500, 100,"zigzag",  50);
+            new EnemyGroup("Rectangular", 500, 100,"zigzag",  20);
 //            new EnemyGroup("Circular", "Fixed", 500, -50, 55);
 //            new EnemyGroup("Rotational", 750, 400, 150, 60);
 //            new Giant("starDestroyer", levelIdx * 250, 200, 100);

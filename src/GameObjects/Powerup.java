@@ -7,6 +7,7 @@ import Movers.PowerupMover;
 
 public class Powerup extends coordinatedObject implements hasRange, hasCoordinates {
     public int type;
+    public String category;
     public PowerupMover powerupMover;
 
     Powerup(int x, int y){

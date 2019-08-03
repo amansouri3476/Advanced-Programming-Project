@@ -308,10 +308,15 @@ public class ClientBackground {
         //////////////////////// Drawing Player(s) EXPLODED Spaceships ///////////////////////////
         {
             for (Player player: GameClient.joinedPlayersObjects){
+                try{
                     if (player.spaceship.isExploded){
                         if (ClientGameEventHandler.spaceship.explosionTimer < ClientGameEventHandler.spaceship.explosionTimerLimit){
-                        g.drawImage(spaceshipExplosion, null, player.spaceship.explosionX - 100, player.spaceship.explosionY - 130);
+                            g.drawImage(spaceshipExplosion, null, player.spaceship.explosionX - 100, player.spaceship.explosionY - 130);
+                        }
                     }
+                }
+                catch (NullPointerException e){
+
                 }
             }
         }
