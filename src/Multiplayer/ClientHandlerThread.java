@@ -140,7 +140,15 @@ public class ClientHandlerThread implements Runnable {
             GameServer.joinedPlayersObjects.get(index).x_coordinate = serverUpdateMessage.player.x_coordinate;
             GameServer.joinedPlayersObjects.get(index).y_coordinate = serverUpdateMessage.player.y_coordinate;
             GameServer.joinedPlayersObjects.get(index).isSpectator = serverUpdateMessage.player.isSpectator;
-//            GameServer.joinedPlayersObjects.get(index).spaceship = serverUpdateMessage.player.spaceship;
+            // temporarily saving client-gun
+            Gun g_temp = GameServer.joinedPlayersObjects.get(index).spaceship.clientGun;
+            GameServer.joinedPlayersObjects.get(index).spaceship = serverUpdateMessage.player.spaceship;
+            GameServer.joinedPlayersObjects.get(index).spaceship.clientGun = g_temp;
+            //
+//            System.out.println("<<<<<" + GameServer.joinedPlayersObjects.get(index).x_coordinate + "," +
+//                    GameServer.joinedPlayersObjects.get(index).y_coordinate + "\t" +
+//                    GameServer.joinedPlayersObjects.get(index).spaceship.x_coordinate + "," +
+//                    GameServer.joinedPlayersObjects.get(index).spaceship.y_coordinate + ">>>>>");
         }
 //        if (counter == 100){
 //            System.out.println("Enemy 0 x coordinate: " + serverUpdateMessage.Enemies.get(0).x_coordinate);

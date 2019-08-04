@@ -3,8 +3,8 @@ package Movers;
 import GameObjects.coordinatedObject;
 
 public class PowerupMover implements Mover{
-    public static double velocityX=2;
-    public static double velocityY=1;
+    private double velocityX=2;
+    private double velocityY=1;
 
     @Override
     public void changeX(coordinatedObject object) {
@@ -39,12 +39,13 @@ public class PowerupMover implements Mover{
             if (Math.abs(velocityY) != 0){
                 velocityY = -(Math.abs(velocityY) * 0.7);
             }
-            if (Math.abs(velocityY) == 0){
+            if (Math.abs(velocityY) <= 0.1){
                 velocityY = 0;
             }
 //            velocityX = (int) Math.round(velocityX * 0.5);
             if (Math.abs(velocityX) != 0){
-                velocityX = velocityX - 1;
+                // keeping it that direction but slowing it down.
+                velocityX = Math.signum(velocityX) * (Math.abs(velocityX) * 0.8);
             }
             if (Math.abs(velocityX) == 0){
                 velocityX = 0;

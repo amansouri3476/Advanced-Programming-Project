@@ -2,15 +2,18 @@ package GameObjects;
 
 import Interfaces.hasCoordinates;
 import Interfaces.hasRange;
-import Movers.SpaceshipMover;
+import Lists.ListOfUsers;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.Serializable;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Spaceship extends coordinatedObject implements hasCoordinates, hasRange, Serializable {
-    public static Gun gun;
+    public Gun gun;
+    public Multiplayer.Gun clientGun;
+    public CopyOnWriteArrayList<Powerup> powerupsCollected = new CopyOnWriteArrayList<>();
     public transient Container container;
     public transient static JLabel spaceshipLabel;
     public transient static BufferedImage spaceshipImage;
@@ -28,7 +31,10 @@ public class Spaceship extends coordinatedObject implements hasCoordinates, hasR
 
     public Spaceship(Container container, JLabel spaceshipLabel){
         System.out.println("GameObjects.Spaceship Constructed");
-        Spaceship.gun = new Gun(container, spaceshipLabel);
+        if (ListOfUsers.getPlayerObjByUsername(ListOfUsers.selectedUser).isServer){
+            this.gun = new Gun(container, spaceshipLabel);
+        }
+        else this.clientGun = new Multiplayer.Gun(container, spaceshipLabel);
 //        Spaceship.spaceshipMover = new SpaceshipMover();
         this.container = container;
         this.spaceshipLabel = spaceshipLabel;
@@ -65,6 +71,7 @@ public class Spaceship extends coordinatedObject implements hasCoordinates, hasR
     public boolean checkCollision(EnemyFire enemyFire) {
         if (this.getX() < enemyFire.getX() && enemyFire.getX() < this.getX() + rangeX && this.getY() < enemyFire.getY() && enemyFire.getY() < this.getY() + rangeY){
             this.isExploded = true;
+            this.gun.downgrade();
             new LoopSound("C:\\Users\\Amin\\IdeaProjects\\StarWars\\src\\GameAssets\\Sonic_Boom.wav", false);
             return true;
         }
@@ -77,6 +84,12 @@ public class Spaceship extends coordinatedObject implements hasCoordinates, hasR
 
         if (spaceship.getX() < enemyFire.getX() && enemyFire.getX() < spaceship.getX() + rangeX && spaceship.getY() < enemyFire.getY() && enemyFire.getY() < spaceship.getY() + rangeY){
             spaceship.isExploded = true;
+            //TODO: Maybe its server's ship or maybe client's. So maybe client-gun or gun should be downgraded.
+            if (ListOfUsers.getPlayerObjByUsername(ListOfUsers.selectedUser).isServer){
+                spaceship.gun.downgrade();
+            }
+            // otherwise client-gun should be downgraded.
+            else spaceship.clientGun.downgrade();
             new LoopSound("C:\\Users\\Amin\\IdeaProjects\\StarWars\\src\\GameAssets\\Sonic_Boom.wav", false);
             return true;
         }

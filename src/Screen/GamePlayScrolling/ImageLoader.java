@@ -1,5 +1,7 @@
 package Screen.GamePlayScrolling;
 
+// This class removes the need to consistently load images and prevents the program from being slowed down.
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -96,6 +98,12 @@ public class ImageLoader {
         }
         if (name.equals("safe_zone")){
             return ImageIO.read(new File("C:\\Users\\Amin\\IdeaProjects\\StarWars\\src\\GameAssets\\safe_zone.png"));
+        }
+        if (name.equals("r2d2")){
+            return ImageIO.read(new File("C:\\Users\\Amin\\IdeaProjects\\StarWars\\src\\GameAssets\\r2d2-s.png"));
+        }
+        if (name.equals("burst")){
+            return ImageIO.read(new File("C:\\Users\\Amin\\IdeaProjects\\StarWars\\src\\GameAssets\\burst.png"));
         }
         return null;
     }

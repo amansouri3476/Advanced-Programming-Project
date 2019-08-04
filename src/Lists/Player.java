@@ -21,6 +21,7 @@ public class Player implements Serializable {
     public boolean canResume;
     public boolean isExploded = false;
     public boolean isSpectator;
+    public boolean isServer = true;
     transient JLabel spaceshipLabel;
     public Player(String name){
         player.put("name",name);

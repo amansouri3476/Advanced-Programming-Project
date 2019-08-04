@@ -4,6 +4,7 @@ import GameObjects.*;
 import Lists.*;
 import Menu.Scorer;
 import Multiplayer.GameServer;
+import Multiplayer.Gun;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -198,11 +199,17 @@ public class Scroll extends Canvas implements MouseMotionListener, MouseListener
             int index = GameServer.joinedPlayers.indexOf(playerName);
             for (Bullet bullet: ListOfBullets.Bullets){
                 if (!bullet.shooter.equals(playerName)){
-                    System.out.println(">>>>> CLIENTS' BULLETS: \t shooter: " + bullet.shooter + "\t---->" + playerName + " which is exploded: " + GameServer.joinedPlayersObjects.get(index).spaceship.isExploded);
-                    System.out.println(">>>>> Collision or not: " + Spaceship.checkCollisionClientBullets(bullet, GameServer.joinedPlayersObjects.get(index).spaceship));
+//                    System.out.println(">>>>> CLIENTS' BULLETS: \t shooter: " + bullet.shooter + "\t---->" + playerName + " which is exploded: " + GameServer.joinedPlayersObjects.get(index).spaceship.isExploded);
+//                    System.out.println(">>>>> Collision or not: " + Spaceship.checkCollisionClientBullets(bullet, GameServer.joinedPlayersObjects.get(index).spaceship));
                     if (Spaceship.checkCollisionClientBullets(bullet, GameServer.joinedPlayersObjects.get(index).spaceship) && !GameServer.joinedPlayersObjects.get(index).spaceship.isExploded){
-                            System.out.println(">>>>> CLIENT HIT: " + playerName);
+//                            System.out.println(">>>>> CLIENT HIT: " + playerName);
                             GameServer.joinedPlayersObjects.get(index).spaceship.isExploded = true;
+                            if (ListOfUsers.getPlayerObjByUsername(ListOfUsers.selectedUser).isServer){
+                                spaceship.gun.downgrade();
+                            }
+                            // otherwise client-gun should be downgraded.
+                            else GameServer.joinedPlayersObjects.get(index).spaceship.clientGun.downgrade();
+                            //TODO: according to being a client or the server, gun or client-gun should be downgraded.
                             int idx = GameServer.joinedPlayers.indexOf(bullet.shooter);
                             GameServer.joinedPlayersObjects.get(idx).score += 100;
 
@@ -425,7 +432,7 @@ public class Scroll extends Canvas implements MouseMotionListener, MouseListener
                     /////////////////// Collision Check ///////////////////
                     if (!isMultiplayer){
                         if (spaceship.checkCollisionPowerup(powerup) && !spaceship.isExploded){
-                            //TODO: Collection of the above powerup should be done.
+                            spaceship.gun.updateGun(powerup);
                             ListOfPowerups.Powerups.remove(powerup);
                         }
                     }
@@ -438,8 +445,23 @@ public class Scroll extends Canvas implements MouseMotionListener, MouseListener
                                 GameServer.joinedPlayersObjects.get(index_1).spaceship = spaceship;
                                 int index = GameServer.joinedPlayers.indexOf(playerName);
                                 if (GameServer.joinedPlayersObjects.get(index).spaceship.checkCollisionPowerup(powerup) && !GameServer.joinedPlayersObjects.get(index).spaceship.isExploded){
-                                    //TODO: Collection of the above powerup should be done.
-                                    ListOfPowerups.Powerups.remove(powerup);
+                                    //if it's the server --> gun.updateGun
+                                    if (playerName.equals(ListOfUsers.selectedUser)){
+                                        spaceship.gun.updateGun(powerup);
+                                        ListOfPowerups.Powerups.remove(powerup);
+                                    }
+                                    // otherwise, client-gun is updgraded.
+                                    // IMPORTANT: It cannot be updated from here! collected powerup should be passed
+                                    // down accordingly and update has to be done at client end.
+                                    else {
+                                        GameServer.joinedPlayersObjects.get(index).spaceship.clientGun.updateGun(powerup);
+//                                        GameServer.joinedPlayersObjects.get(index).spaceship.powerupsCollected.add(powerup);
+                                        Gun g = GameServer.joinedPlayersObjects.get(index).spaceship.clientGun;
+                                        System.out.println("damage: " + g.damage + ", firing period: "+ g.firingPeriod +
+                                                ", level: " + g.level + ", heatLimit: " + g.heatLimit + ", bulletType: "
+                                                + g.bulletType + ", heatIncrement: " + g.heatIncrement);
+                                        ListOfPowerups.Powerups.remove(powerup);
+                                    }
                                 }
                             }
                         }
@@ -556,10 +578,10 @@ public class Scroll extends Canvas implements MouseMotionListener, MouseListener
                             enemy.isDead = true;
                             spaceship.explosionX = spaceship.x_coordinate - 50;
                             spaceship.explosionY = spaceship.y_coordinate - 50;
-                            //                                    ListOfExplosions.updateList();
+//                            ListOfExplosions.updateList();
                             LoopSound loopSound = new LoopSound("C:\\Users\\Amin\\IdeaProjects\\StarWars\\src\\GameAssets\\Sonic_Boom.wav", false);
                             enemy.isDead = true;
-                            //                                    ListOfEnemies.Enemies.remove(enemy);
+//                            ListOfEnemies.Enemies.remove(enemy);
                         }
                     }
                     ////////////// Other Clients //////////////
@@ -571,6 +593,7 @@ public class Scroll extends Canvas implements MouseMotionListener, MouseListener
                                 GameServer.joinedPlayersObjects.get(index_1).spaceship = spaceship;
                                 int index = GameServer.joinedPlayers.indexOf(playerName);
                                 if (enemy.checkCollisionSpaceship(GameServer.joinedPlayersObjects.get(index).spaceship) && !GameServer.joinedPlayersObjects.get(index).spaceship.isExploded){
+                                    System.out.println(enemy.x_coordinate + "," + enemy.y_coordinate + "\t" + GameServer.joinedPlayersObjects.get(index).spaceship.x_coordinate + "," + GameServer.joinedPlayersObjects.get(index).spaceship.y_coordinate);
                                     GameServer.joinedPlayersObjects.get(index).spaceship.isExploded = true;
                                     enemy.isDead = true;
                                     GameServer.joinedPlayersObjects.get(index).spaceship.explosionX = GameServer.joinedPlayersObjects.get(index).spaceship.x_coordinate - 50;
@@ -715,13 +738,14 @@ public class Scroll extends Canvas implements MouseMotionListener, MouseListener
 //            GameEventHandler.spaceship.setX(event_x - xOffset);
 //            GameEventHandler.spaceship.setY(event_y - yOffset);
             if (e.getButton() == MouseEvent.BUTTON3 && !spaceship.isExploded){
-                Gun.bombShoot(spaceship.getX(), spaceship.getY());
+                spaceship.gun.bombShoot(spaceship.getX(), spaceship.getY());
             }
             if (e.getButton() == MouseEvent.BUTTON1){
                 isPressed = false;
                 isDragged = true;
                 if (!spaceship.isExploded){
-                    Gun.longShotD(spaceship.getX(), spaceship.getY(), Gun.damage);
+//                    spaceship.gun.longShotD(spaceship.getX(), spaceship.getY(), spaceship.gun.damage);
+                    spaceship.gun.longShotD(spaceship.getX(), spaceship.getY());
                 }
             }
         }
@@ -738,7 +762,7 @@ public class Scroll extends Canvas implements MouseMotionListener, MouseListener
 //            GameEventHandler.spaceship.setX(event_x - xOffset);
 //            GameEventHandler.spaceship.setY(event_y - yOffset);
             if (e.getButton() == MouseEvent.BUTTON3 && !spaceship.isExploded){
-                Gun.bombShoot(spaceship.getX(), spaceship.getY());
+                spaceship.gun.bombShoot(spaceship.getX(), spaceship.getY());
             }
             if (e.getButton() == MouseEvent.BUTTON1){
                 isDragged = false;
@@ -751,15 +775,18 @@ public class Scroll extends Canvas implements MouseMotionListener, MouseListener
                         while (isPressed){
 //                        System.out.println("Pressed and trying");
                             System.out.print("");
-                            if (timerP == 200){
+//                            if (timerP == 200){
+                            if (timerP == spaceship.gun.firingPeriod){
 //                            System.out.println("First Time!");
                                 firstTime = true;
                             }
-                            if (timerP % 200 == 0 && firstTime){
+//                            if (timerP % 200 == 0 && firstTime){
+                            if (timerP % spaceship.gun.firingPeriod == 0 && firstTime){
                                 firstTime = false;
                                 System.out.println("Press Accomplished");
                                 if (!spaceship.isExploded){
-                                        Gun.longShotP(spaceship.getX(), spaceship.getY(), Gun.damage);
+//                                        spaceship.gun.longShotP(spaceship.getX(), spaceship.getY(), spaceship.gun.damage);
+                                        spaceship.gun.longShotP(spaceship.getX(), spaceship.getY());
                                 }
                             }
                         }
@@ -772,7 +799,7 @@ public class Scroll extends Canvas implements MouseMotionListener, MouseListener
         }
         if (eventDescription.equals("Mouse released")){
             System.out.println("Mouse released");
-            Gun.interruptShooting();
+            spaceship.gun.interruptShooting();
         }
 
         if (eventDescription.equals("Mouse clicked")){

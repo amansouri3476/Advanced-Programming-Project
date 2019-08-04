@@ -16,14 +16,19 @@ public class BombList {
 
             for (Bomb bomb : Bombs) {
                 ////// Explosion Check (Bomb reached center) //////
-                if (bomb.bombMover.reached_x && bomb.bombMover.reached_y){
-                    for (Enemy enemy: ListOfEnemies.Enemies){
-                        enemy.isDead = true;
+                try{
+                    if (bomb.bombMover.reached_x && bomb.bombMover.reached_y){
+                        for (Enemy enemy: ListOfEnemies.Enemies){
+                            enemy.isDead = true;
+                        }
+                        Scorer.bombScore(bomb);
+                        LoopSound loopSound = new LoopSound("C:\\Users\\Amin\\IdeaProjects\\StarWars\\src\\GameAssets\\Depth_Charge_Short.wav", false);
+                        ListOfExplosions.updateList();
+                        Bombs.remove(bomb);
                     }
-                    Scorer.bombScore(bomb);
-                    LoopSound loopSound = new LoopSound("C:\\Users\\Amin\\IdeaProjects\\StarWars\\src\\GameAssets\\Depth_Charge_Short.wav", false);
-                    ListOfExplosions.updateList();
-                    Bombs.remove(bomb);
+                }
+                catch (NullPointerException e){
+
                 }
                 if (bomb.isNotInScreen()){
                     Bombs.remove(bomb);

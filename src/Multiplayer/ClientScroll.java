@@ -183,6 +183,7 @@ public class ClientScroll extends Canvas implements MouseMotionListener, MouseLi
         ListOfUsers.getPlayerObjByUsername(ListOfUsers.selectedUser).x_coordinate = spaceship.getX();
         ListOfUsers.getPlayerObjByUsername(ListOfUsers.selectedUser).y_coordinate = spaceship.getY();
         ListOfUsers.getPlayerObjByUsername(ListOfUsers.selectedUser).spaceship = spaceship;
+        ListOfUsers.getPlayerObjByUsername(ListOfUsers.selectedUser).spaceship.clientGun = ClientGameEventHandler.spaceship.clientGun;
     }
 
     @Override
@@ -268,13 +269,13 @@ public class ClientScroll extends Canvas implements MouseMotionListener, MouseLi
 //            GameEventHandler.spaceship.setX(event_x - xOffset);
 //            GameEventHandler.spaceship.setY(event_y - yOffset);
                 if (e.getButton() == MouseEvent.BUTTON3 && !spaceship.isExploded){
-                    Gun.bombShoot(spaceship.getX(), spaceship.getY());
+                    spaceship.clientGun.bombShoot(spaceship.getX(), spaceship.getY());
                 }
                 if (e.getButton() == MouseEvent.BUTTON1){
                     isPressed = false;
                     isDragged = true;
                     if (!spaceship.isExploded){
-                        Gun.longShotD(spaceship.getX(), spaceship.getY(), Gun.damage);
+                        spaceship.clientGun.longShotD(spaceship.getX(), spaceship.getY());
                     }
                 }
             }
@@ -291,7 +292,7 @@ public class ClientScroll extends Canvas implements MouseMotionListener, MouseLi
 //            GameEventHandler.spaceship.setX(event_x - xOffset);
 //            GameEventHandler.spaceship.setY(event_y - yOffset);
                 if (e.getButton() == MouseEvent.BUTTON3 && !spaceship.isExploded){
-                    Gun.bombShoot(spaceship.getX(), spaceship.getY());
+                    spaceship.clientGun.bombShoot(spaceship.getX(), spaceship.getY());
                 }
                 if (e.getButton() == MouseEvent.BUTTON1){
                     isDragged = false;
@@ -304,15 +305,15 @@ public class ClientScroll extends Canvas implements MouseMotionListener, MouseLi
                             while (isPressed){
 //                        System.out.println("Pressed and trying");
                                 System.out.print("");
-                                if (timerP == 200){
+                                if (timerP == spaceship.clientGun.firingPeriod){
 //                            System.out.println("First Time!");
                                     firstTime = true;
                                 }
-                                if (timerP % 200 == 0 && firstTime){
+                                if (timerP % spaceship.clientGun.firingPeriod == 0 && firstTime){
                                     firstTime = false;
                                     System.out.println("Press Accomplished");
                                     if (!spaceship.isExploded){
-                                        Gun.longShotP(spaceship.getX(), spaceship.getY(), Gun.damage);
+                                        spaceship.clientGun.longShotP(spaceship.getX(), spaceship.getY());
                                     }
                                 }
                             }
@@ -325,7 +326,7 @@ public class ClientScroll extends Canvas implements MouseMotionListener, MouseLi
             }
             if (eventDescription.equals("Mouse released")){
                 System.out.println("Mouse released");
-                Gun.interruptShooting();
+                spaceship.clientGun.interruptShooting();
             }
 
             if (eventDescription.equals("Mouse clicked")){

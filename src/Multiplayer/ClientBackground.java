@@ -46,6 +46,8 @@ public class ClientBackground {
     private BufferedImage powerupPink;
     private BufferedImage powerupYellow;
     private BufferedImage powerupDouble;
+    private BufferedImage powerupR2D2;
+    private BufferedImage powerupBurst;
 
     private BufferedImage waveLogoI;
     private BufferedImage waveLogoII;
@@ -86,6 +88,8 @@ public class ClientBackground {
             powerupPink = ImageLoader.imgLoader("PU_Pink");
             powerupYellow = ImageLoader.imgLoader("PU_Yellow");
             powerupDouble = ImageLoader.imgLoader("PU_Double");
+            powerupR2D2 = ImageLoader.imgLoader("r2d2");
+            powerupBurst = ImageLoader.imgLoader("burst");
             waveLogoI = ImageLoader.imgLoader("wave_I");
             waveLogoII = ImageLoader.imgLoader("wave_II");
             waveLogoIII = ImageLoader.imgLoader("wave_III");
@@ -159,7 +163,7 @@ public class ClientBackground {
 
                 //////////// Displaying player's engine ////////////
                 window.setColor(Color.BLUE);
-                window.fillRoundRect(10, 10, 500, 50, 50, 50);
+                window.fillRoundRect(10, 10, ClientGameEventHandler.spaceship.clientGun.heatLimit * 5, 50, 50, 50);
                 window.setColor(Color.getHSBColor(0, 0.2f + 0.6f * (ListOfClientBullets.heat)/100, 0.5f));
                 window.fillRoundRect(10, 10, (int) (ListOfClientBullets.heat * 5), 50, 50, 50);
 
@@ -227,9 +231,19 @@ public class ClientBackground {
             AtomicInteger bulletCounter = new AtomicInteger(0);
             synchronized (ListOfBullets.Bullets){
                 ListOfBullets.Bullets.forEach(bullet -> {
+                    BufferedImage bulletTypeImage = bulletTypeIdentifier(bullet.type);
                     bulletCounter.getAndIncrement();
-                    g.drawImage(bulletImg, null, bullet.x_coordinate, bullet.y_coordinate);
-
+                    if (bulletTypeImage == bulletImg){
+                        g.drawImage(bulletTypeImage, null, bullet.x_coordinate, bullet.y_coordinate);
+                    }
+                    // rotation is needed
+                    else {
+                        AffineTransform old = g.getTransform();
+                        double theta = bullet.angle;
+                        g.rotate(theta + Math.PI/2, bullet.x_coordinate + 20, bullet.y_coordinate + 20);
+                        g.drawImage(bulletTypeImage, null, bullet.x_coordinate, bullet.y_coordinate);
+                        g.setTransform(old);
+                    }
                 });
             }
         }
@@ -253,7 +267,7 @@ public class ClientBackground {
             synchronized (ListOfPowerups.Powerups){
                 ListOfPowerups.Powerups.forEach(powerup -> {
                     powerupCounter.getAndIncrement();
-                    BufferedImage puImg = powerupIdentifier(powerup.type);
+                    BufferedImage puImg = powerupIdentifier(powerup.category, powerup.type);
                     g.drawImage(puImg, null, powerup.x_coordinate, powerup.y_coordinate);
 
                 });
@@ -331,6 +345,38 @@ public class ClientBackground {
 
     }
 
+    private BufferedImage bulletTypeIdentifier(int type){
+        if (type == 1){
+            // Blue Saber
+            return powerupBlue;
+        }
+        if (type == 2){
+            // Bright Blue Saber
+            return powerupBrightBlue;
+        }
+        if (type == 3){
+            // Cyan Saber
+            return powerupCyan;
+        }
+        if (type == 4){
+            // Green Saber
+            return powerupGreen;
+        }
+        if (type == 5){
+            // Pink Saber
+            return powerupPink;
+        }
+        if (type == 6){
+            // Yellow Saber
+            return powerupYellow;
+        }
+        if (type == 7){
+            // Double Saber
+            return powerupDouble;
+        }
+        else return bulletImg;
+    }
+
     private BufferedImage giantTypeIdentifier(Giant giant) {
         if (giant.type.equals("starDestroyer")){
             return giantStarDestroyer;
@@ -346,26 +392,40 @@ public class ClientBackground {
         }
     }
 
-    private BufferedImage powerupIdentifier(int type) {
-        if (type == 1){
-            return powerupBlue;
+    private BufferedImage powerupIdentifier(String category, int type) {
+        BufferedImage powerupImg = tieSmall;
+        if (category.equals("II")){
+            if (type == 1){
+                powerupImg = powerupBlue;
+            }
+            if (type == 2){
+                powerupImg = powerupBrightBlue;
+            }
+            if (type == 3){
+                powerupImg = powerupCyan;
+            }
+            if (type == 4){
+                powerupImg = powerupGreen;
+            }
+            if (type == 5){
+                powerupImg = powerupPink;
+            }
+            if (type == 6){
+                powerupImg = powerupYellow;
+            }
+            if (type == 7){
+                powerupImg = powerupDouble;
+            }
         }
-        if (type == 2){
-            return powerupBrightBlue;
+        else {
+            if (type == 1){
+                powerupImg = powerupR2D2;
+            }
+            if (type == 2){
+                powerupImg = powerupBurst;
+            }
         }
-        if (type == 3){
-            return powerupCyan;
-        }
-        if (type == 4){
-            return powerupGreen;
-        }
-        if (type == 5){
-            return powerupPink;
-        }
-        if (type == 6){
-            return powerupYellow;
-        }
-        else return powerupDouble;
+        return powerupImg;
     }
 
     public void setX(int x) {

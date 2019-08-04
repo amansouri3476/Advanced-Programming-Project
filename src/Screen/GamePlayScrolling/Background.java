@@ -1,6 +1,8 @@
 package Screen.GamePlayScrolling;
 
 import GameObjects.Giant;
+import GameObjects.Gun;
+import GameObjects.Spaceship;
 import Lists.*;
 import Multiplayer.ClientGameEventHandler;
 import Multiplayer.ClientScroll;
@@ -47,6 +49,8 @@ public class Background {
     private BufferedImage powerupPink;
     private BufferedImage powerupYellow;
     private BufferedImage powerupDouble;
+    private BufferedImage powerupR2D2;
+    private BufferedImage powerupBurst;
 
     private BufferedImage waveLogoI;
     private BufferedImage waveLogoII;
@@ -87,6 +91,8 @@ public class Background {
             powerupPink = ImageLoader.imgLoader("PU_Pink");
             powerupYellow = ImageLoader.imgLoader("PU_Yellow");
             powerupDouble = ImageLoader.imgLoader("PU_Double");
+            powerupR2D2 = ImageLoader.imgLoader("r2d2");
+            powerupBurst = ImageLoader.imgLoader("burst");
             waveLogoI = ImageLoader.imgLoader("wave_I");
             waveLogoII = ImageLoader.imgLoader("wave_II");
             waveLogoIII = ImageLoader.imgLoader("wave_III");
@@ -123,7 +129,7 @@ public class Background {
         // Draw the image onto the Graphics reference
         window.drawImage(image, getX(), getY(), image.getWidth(), image.getHeight(), null);
         window.setColor(Color.BLUE);
-        window.fillRoundRect(10, 10, 500, 50, 50, 50);
+        window.fillRoundRect(10, 10, GameEventHandler.spaceship.gun.heatLimit * 5, 50, 50, 50);
         window.setColor(Color.getHSBColor(0, 0.2f + 0.6f * (ListOfBullets.heat)/100, 0.5f));
         window.fillRoundRect(10, 10, (int) (ListOfBullets.heat * 5), 50, 50, 50);
 
@@ -207,27 +213,34 @@ public class Background {
                         // So as not to draw server's spaceship twice
                     }
                     else {
-                        if (!player.spaceship.isExploded && !player.isSpectator){
-                            g.drawImage(destroyer, null, player.x_coordinate, player.y_coordinate);
+                        try{
+                            if (!player.spaceship.isExploded && !player.isSpectator){
+                                g.drawImage(destroyer, null, player.x_coordinate, player.y_coordinate);
 
-                            // Displaying player's Name
-                            g.setFont(new Font("Georgia", Font.ITALIC, 32));
-                            g.setColor(Color.GREEN);
-                            g.drawString(player.getUserName(), player.x_coordinate + 20, player.y_coordinate + 100);
-                        }
-                        else if (player.spaceship.isExploded){
-                            g.drawImage(destroyer_respawn, null, player.x_coordinate, player.y_coordinate);
-                            g.setFont(new Font("Georgia", Font.ITALIC, 32));
-                            g.setColor(Color.GREEN);
-                            g.drawString(player.getUserName(), player.x_coordinate + 20, player.y_coordinate + 100);
-                        }
-                        //TODO: Waiting to Join the game
-                        else {
+                                // Displaying player's Name
+                                g.setFont(new Font("Georgia", Font.ITALIC, 32));
+                                g.setColor(Color.GREEN);
+                                g.drawString(player.getUserName(), player.x_coordinate + 20, player.y_coordinate + 100);
+                                g.drawString(player.x_coordinate + " ," + player.y_coordinate, player.x_coordinate, player.y_coordinate);
+                            }
+                            else if (player.spaceship.isExploded){
+                                g.drawImage(destroyer_respawn, null, player.x_coordinate, player.y_coordinate);
+                                g.setFont(new Font("Georgia", Font.ITALIC, 32));
+                                g.setColor(Color.GREEN);
+                                g.drawString(player.getUserName(), player.x_coordinate + 20, player.y_coordinate + 100);
+                            }
+                            //TODO: Waiting to Join the game
+                            else {
 //                        // Should include a condition so as to draw just when 'join request' is sent.
 //                        g.drawImage(destroyer_respawn, null, player.x_coordinate, player.y_coordinate);
 //                        g.setFont(new Font("Georgia", Font.ITALIC, 32));
 //                        g.setColor(Color.GREEN);
 //                        g.drawString(player.getUserName(), player.x_coordinate + 20, player.y_coordinate + 100);
+                            }
+
+                        }
+                        catch (NullPointerException e){
+
                         }
                     }
                 }
@@ -246,6 +259,7 @@ public class Background {
             AtomicInteger bulletCounter = new AtomicInteger(0);
             synchronized (ListOfBullets.Bullets){
                 ListOfBullets.Bullets.forEach(bullet -> {
+                    BufferedImage bulletTypeImage = bulletTypeIdentifier(bullet.type);
                     bulletCounter.getAndIncrement();
                     g.drawImage(bulletImg, null, bullet.x_coordinate, bullet.y_coordinate);
                 });
@@ -271,7 +285,7 @@ public class Background {
             synchronized (ListOfPowerups.Powerups){
                 ListOfPowerups.Powerups.forEach(powerup -> {
                     powerupCounter.getAndIncrement();
-                    BufferedImage puImg = powerupIdentifier(powerup.type);
+                    BufferedImage puImg = powerupIdentifier(powerup.category, powerup.type);
                     g.drawImage(puImg, null, powerup.x_coordinate, powerup.y_coordinate);
 
                 });
@@ -336,9 +350,14 @@ public class Background {
                         // So as not to draw server's spaceship twice
                     }
                     else {
-                        if (player.spaceship.isExploded){
-                            if (player.spaceship.explosionTimer < player.spaceship.explosionTimerLimit)
-                                g.drawImage(spaceshipExplosion, null, player.spaceship.explosionX - 100, player.spaceship.explosionY - 130);
+                        try {
+                            if (player.spaceship.isExploded){
+                                if (player.spaceship.explosionTimer < player.spaceship.explosionTimerLimit)
+                                    g.drawImage(spaceshipExplosion, null, player.spaceship.explosionX - 100, player.spaceship.explosionY - 130);
+                            }
+                        }
+                        catch (NullPointerException e){
+
                         }
                     }
                 }
@@ -378,6 +397,38 @@ public class Background {
 
     }
 
+    private BufferedImage bulletTypeIdentifier(int type){
+        if (type == 1){
+            // Blue Saber
+            return powerupBlue;
+        }
+        if (type == 2){
+            // Bright Blue Saber
+            return powerupBrightBlue;
+        }
+        if (type == 3){
+            // Cyan Saber
+            return powerupCyan;
+        }
+        if (type == 4){
+            // Green Saber
+            return powerupGreen;
+        }
+        if (type == 5){
+            // Pink Saber
+            return powerupPink;
+        }
+        if (type == 6){
+            // Yellow Saber
+            return powerupYellow;
+        }
+        if (type == 7){
+            // Double Saber
+            return powerupDouble;
+        }
+        else return bulletImg;
+    }
+
     private BufferedImage giantTypeIdentifier(Giant giant) {
         if (giant.type.equals("starDestroyer")){
             return giantStarDestroyer;
@@ -393,26 +444,40 @@ public class Background {
         }
     }
 
-    private BufferedImage powerupIdentifier(int type) {
-        if (type == 1){
-            return powerupBlue;
+    private BufferedImage powerupIdentifier(String category, int type) {
+        BufferedImage powerupImg = tieSmall;
+        if (category.equals("II")){
+            if (type == 1){
+                powerupImg = powerupBlue;
+            }
+            if (type == 2){
+                powerupImg = powerupBrightBlue;
+            }
+            if (type == 3){
+                powerupImg = powerupCyan;
+            }
+            if (type == 4){
+                powerupImg = powerupGreen;
+            }
+            if (type == 5){
+                powerupImg = powerupPink;
+            }
+            if (type == 6){
+                powerupImg = powerupYellow;
+            }
+            if (type == 7){
+                powerupImg = powerupDouble;
+            }
         }
-        if (type == 2){
-            return powerupBrightBlue;
+        else {
+            if (type == 1){
+                powerupImg = powerupR2D2;
+            }
+            if (type == 2){
+                powerupImg = powerupBurst;
+            }
         }
-        if (type == 3){
-            return powerupCyan;
-        }
-        if (type == 4){
-            return powerupGreen;
-        }
-        if (type == 5){
-            return powerupPink;
-        }
-        if (type == 6){
-            return powerupYellow;
-        }
-        else return powerupDouble;
+        return powerupImg;
     }
 
     public void setX(int x) {

@@ -1,5 +1,7 @@
 package MovingBackground;
 
+import Screen.GamePlayScrolling.ImageLoader;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -12,6 +14,18 @@ public class ScrollingBackground extends Canvas implements Runnable {
     private Background backTwo;
 
     private BufferedImage back;
+
+    //
+//    private BufferedImage r2d2;
+//
+//    {
+//        try {
+//            r2d2 = ImageLoader.imgLoader("r2d2");
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+    //
 
     public ScrollingBackground() throws IOException {
         backOne = new Background();
@@ -55,6 +69,8 @@ public class ScrollingBackground extends Canvas implements Runnable {
 
         // Draw the image onto the window
         twoD.drawImage(back, null, 0, 0);
+
+//        twoD.drawImage(r2d2, null, 400, 400);
 
     }
 

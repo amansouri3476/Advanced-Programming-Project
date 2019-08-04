@@ -1,6 +1,8 @@
 package Lists;
 
 import GameObjects.Bullet;
+import GameObjects.Spaceship;
+import Screen.GamePlayScrolling.GameEventHandler;
 import Screen.GamePlayScrolling.Scroll;
 
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -16,7 +18,7 @@ public class ListOfBullets {
         if (heat <= 0){
             heat = 0;
         }
-        if (heat >= 100){
+        if (heat >= GameEventHandler.spaceship.gun.heatLimit){
             Scroll.isOverheated = true;
         }
         for (Bullet bullet : Bullets) {

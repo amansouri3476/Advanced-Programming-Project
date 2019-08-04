@@ -30,6 +30,11 @@ public class GameClient implements Runnable {
 
 
     public GameClient(Container contentPane, String portNumber, String ipAddress) {
+
+        //TODO: if back button is pressed, this player, later may change its condition to a server.
+
+        // To be used when constructing gun objects.
+        ListOfUsers.getPlayerObjByUsername(ListOfUsers.selectedUser).isServer = false;
         int radius = 10;
         // Transparent 16 x 16 pixel cursor image.
         this.container = contentPane;
@@ -151,7 +156,6 @@ public class GameClient implements Runnable {
                                     //////////////
                                     NetworkMessage serverUpdateMessage = (NetworkMessage) ois.readUnshared();
 //                                    System.out.println(">>>>>>>>>>>>>> Receiver received a message");
-                                    checkStatus(serverUpdateMessage);
                                     decodeMessage(serverUpdateMessage);
 
                                     Thread.sleep(1);
@@ -159,6 +163,7 @@ public class GameClient implements Runnable {
                                     if (!ClientGameEventHandler.isSpectator){
                                         NetworkMessage message = new NetworkMessage(ListOfClientBullets.clientBullets,
                                                 BombList.clientBombs, ListOfUsers.getPlayerObjByUsername(ListOfUsers.selectedUser));
+                                        checkStatus(message);
 //                                        checkStatus(message);
 //                                        System.out.println(">>>>>>>>>>>>>> Receiver sent a message");
                                         oos.writeUnshared(message);
@@ -219,21 +224,29 @@ public class GameClient implements Runnable {
         // Retrieving this client's info from the server
         int index = joinedPlayersNames.indexOf(ListOfUsers.selectedUser);
         ListOfUsers.getPlayerObjByUsername(ListOfUsers.selectedUser).spaceship = joinedPlayersObjects.get(index).spaceship;
+        ClientGameEventHandler.spaceship.clientGun = joinedPlayersObjects.get(index).spaceship.clientGun;
 
+
+//        Gun g = joinedPlayersObjects.get(index).spaceship.clientGun;
+//        System.out.println(">>>>>>>>>>> damage: " + g.damage + ", firing period: "+ g.firingPeriod +
+//                ", level: " + g.level + ", heatLimit: " + g.heatLimit + ", bulletType: "
+//                + g.bulletType + ", heatIncrement: " + g.heatIncrement);
+        //
+//        Gun g_ = ListOfUsers.getPlayerObjByUsername(ListOfUsers.selectedUser).spaceship.clientGun;
+//        System.out.println("<<<<<<<<<<< damage: " + g_.damage + ", firing period: "+ g_.firingPeriod +
+//                ", level: " + g_.level + ", heatLimit: " + g_.heatLimit + ", bulletType: "
+//                + g_.bulletType + ", heatIncrement: " + g_.heatIncrement);
+//        System.out.println("damage: " + g.damage + ", firing period: "+ g.firingPeriod + ", level: " + g.level);
+        //
         ClientScroll.score = (int) serverUpdateMessage.scoreDict.get(ListOfUsers.selectedUser);
-
-//        ListOfUsers.getPlayerObjByUsername(ListOfUsers.selectedUser).score = (int) serverUpdateMessage.scoreDict.get(ListOfUsers.selectedUser);
-//        if (counter == 100){
-//            System.out.println("Enemy 0 x coordinate: " + serverUpdateMessage.Enemies.get(0).x_coordinate);
-//            System.out.println("Number of Bullets: " + serverUpdateMessage.Bullets.size());
-//            System.out.println("Number of Enemies: " + serverUpdateMessage.Enemies.size());
-//            System.out.println("Server ss x coordinate: " + ClientGameEventHandler.spaceship.x_coordinate);
-//            counter = 1;
-//        }
-//        else counter++;
 
     }
     private void checkStatus(NetworkMessage networkMessage) {
+//        Gun g_ = networkMessage.player.spaceship.clientGun;
+//        System.out.println("??????????? damage: " + g_.damage + ", firing period: "+ g_.firingPeriod +
+//                ", level: " + g_.level + ", heatLimit: " + g_.heatLimit + ", bulletType: "
+//                + g_.bulletType + ", heatIncrement: " + g_.heatIncrement);
+//        System.out.println();
 //            System.out.println(">>>>>>>> Number of Bullets received from the server to the SPECTATOR: " + networkMessage.Bullets.size());
 //            System.out.println("Enemy 0 x coordinate: " + networkMessage.Enemies.get(0).x_coordinate);
 //            System.out.println("Number of Bullets: " + networkMessage.Bullets.size());

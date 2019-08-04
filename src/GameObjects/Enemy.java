@@ -47,10 +47,10 @@ public class Enemy extends coordinatedObject implements hasRange, hasCoordinates
     }
 
 
-    public boolean checkCollision(coordinatedObject object){
+    public boolean checkCollision(Bullet object){
 
         if (this.getX() - rangeX < object.getX() && object.getX() < this.getX() + rangeX && this.getY() - rangeY < object.getY() && object.getY() < this.getY() + rangeY){
-            this.health -= 5;
+            this.health -= object.damage;
             new LoopSound("C:\\Users\\Amin\\IdeaProjects\\StarWars\\src\\GameAssets\\Metal_Bang.wav", false);
             if (this.health <= 0) {
                 isDead = true;

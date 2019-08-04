@@ -37,6 +37,10 @@ public class GameServer implements Runnable {
 
 
         isMultiplayer = true;
+        //TODO: if back button is pressed, this player, later may change its condition to a client.
+
+        // To be used when constructing gun objects.
+        ListOfUsers.getPlayerObjByUsername(ListOfUsers.selectedUser).isServer = true;
         // Transparent 16 x 16 pixel cursor image.
         this.container = contentPane;
         GameServer.joinedPlayers.add(ListOfUsers.selectedUser);

@@ -22,10 +22,8 @@ public class Main {
         Saver saver = new Saver("C:\\Users\\Amin\\IdeaProjects\\StarWars\\src" + player.getUserName(), player);
         Loader loader = new Loader("C:\\Users\\Amin\\IdeaProjects\\StarWars\\src" + player.getUserName());
         Player player1 = new Player("Erfan");
-        Player player2 = new Player("Ehsan");
         LoopSound loopSound = new LoopSound("src/imperial_march.wav", true);
 //       loopSound.clip.stop();
-
         /* TODO
             1. Third Wave and all enemies should have hidden coordinates for smoother and clean movements.
             Done: 2. Scoreboard for all players needs to be added.
@@ -48,8 +46,19 @@ public class Main {
             16. Giants shooting pattern needs to be implemented.
             17. Adding more giants to the game. (lack of time, as simple as possible)
             18. Collision check could be done using radial distance.
+            ********>>
             19. Game Data file needs to be added.
-            20. Adding the health and coins and etc. for both S-player and M-player.
+            20. Adding the health and coins and score. for both S-player and M-player.
+            ********<<
+            21. Heat for burst-shots should NOT be increased proportional to the number of the shots.
+            22. An enemy type had to shoot right to the spaceship and I haven't implemented it!
+            22. Refer to this point that game has sound and video. (Even when objects are hit.)
+            ********>>
+            23. Checking spectator status and enabling them to join accordingly.
+            24. Enabling Esc and Resuming of the game.
+            ********<<
+            25. Feature: Heat changes color of the engine.
          */
+
     }
 }
